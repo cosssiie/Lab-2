@@ -15,7 +15,5 @@ public class GroupOfItems {
         return "\nНазва групи товарів: " + nameOfGroup +
         "\nОпис групи товарів: " + descriptionOfGroup;
     }
-    
-
 }
 
