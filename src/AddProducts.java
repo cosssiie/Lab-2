@@ -1,22 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class AddProducts extends JFrame {
 
-    /**Вибір функції: додати групу товарів/додати товар */
     private JComboBox<String> chooseFunction;
-
-    /**Ввести назву товару/ групи товарів */
     private JTextField nameOfProduct;
-
-    /**Вибір групи товарів, куди додати товар */
     private JComboBox<String> groupNameBox;
-
-    /**Кнопка "зберегти" */
     private JButton saveButton;
-
 
     private static final int width = 600;
     private static final int height = 600;
@@ -25,6 +16,8 @@ public class AddProducts extends JFrame {
     private static final int widthOfButton = 170;
     private static final int heightOfButton = 70;
 
+    private static final String groupsFileName = "GroupsOfProducts.txt"; // Файл для хранения списка групп товаров
+
     public AddProducts(String name) {
         super();
         this.setTitle(name);
@@ -32,14 +25,13 @@ public class AddProducts extends JFrame {
         this.getContentPane().setLayout(null);
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
         init();
-        this.add(chooseFunction); //додати товар
-        this.add(nameOfProduct);  //назва товару/групи товарів
-        this.add(groupNameBox);  //додані групи товарів
-        this.add(saveButton);   //кнопка "зберігти"
+        this.add(chooseFunction);
+        this.add(nameOfProduct);
+        this.add(groupNameBox);
+        this.add(saveButton);
     }
 
     private void init() {
-
         chooseFunction = new JComboBox<>();
         chooseFunction.addItem("Додати групу товарів");
         chooseFunction.addItem("Додати товар");
@@ -59,16 +51,11 @@ public class AddProducts extends JFrame {
             }
         });
 
-
-
         nameOfProduct = new JTextField();
         nameOfProduct.setBounds(width/2 - widthOfField/2, height/2 + heightOfField/2 , widthOfField, heightOfField);
         nameOfProduct.setHorizontalAlignment(JTextField.CENTER);
         nameOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
         this.getContentPane().add(nameOfProduct);
-
-
-
 
         groupNameBox = new JComboBox<>();
         groupNameBox.setBounds(width/2 - widthOfField/2, height/2 - heightOfField , widthOfField, heightOfField);
@@ -77,7 +64,8 @@ public class AddProducts extends JFrame {
         groupNameBox.setVisible(false);
         this.getContentPane().add(groupNameBox);
 
-
+        // Загружаем список групп товаров из файла
+        loadGroupNamesFromFile();
 
         saveButton = new JButton("Зберегти");
         saveButton.setBounds(width/2 - widthOfButton/2, height - 150, widthOfButton, heightOfButton);
@@ -89,24 +77,68 @@ public class AddProducts extends JFrame {
 
         saveButton.addActionListener(e -> {
             if (chooseFunction.getSelectedIndex() == 0) {
-
+                // Добавляем новую группу товаров
                 String groupName = nameOfProduct.getText();
-                saveGroupNameToFile(groupName);
-                nameOfProduct.setText("");
-                groupNameBox.addItem(groupName);
+                if (!groupName.isEmpty()) {
+                    addGroup(groupName);
+                    nameOfProduct.setText("");
+                    groupNameBox.addItem(groupName);
+                }
+            } else if (chooseFunction.getSelectedIndex() == 1) {
+                // Добавляем товар в выбранную группу
+                String groupName = (String) groupNameBox.getSelectedItem();
+                String productName = nameOfProduct.getText();
+                if (!groupName.isEmpty() && !productName.isEmpty()) {
+                    addProductToGroup(groupName, productName);
+                    nameOfProduct.setText("");
+                }
             }
         });
     }
 
-    private void saveGroupNameToFile(String groupName) {
+    // Метод для добавления новой группы товаров
+    private void addGroup(String groupName) {
         try {
-            FileWriter writer = new FileWriter("GroupsOfProducts.txt", true);
+            FileWriter writer = new FileWriter(groupsFileName, true);
             writer.write(groupName + "\n");
             writer.close();
-            JOptionPane.showMessageDialog(this, "Назва групи товарів успішно збережена!");
+            JOptionPane.showMessageDialog(this, "Група товарів \"" + groupName + "\" успішно додана!");
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при збереженні.");
+            JOptionPane.showMessageDialog(this, "Помилка при додаванні групи товарів.");
+        }
+    }
+
+    // Метод для добавления товара в указанную группу
+    private void addProductToGroup(String groupName, String productName) {
+        try {
+            File groupFile = new File(groupName + ".txt");
+            FileWriter writer = new FileWriter(groupFile, true);
+            writer.write(productName + "\n");
+            writer.close();
+            JOptionPane.showMessageDialog(this, "Товар \"" + productName + "\" успішно доданий в групу \"" + groupName + "\"!");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при додаванні товару в групу.");
+        }
+    }
+
+    // Метод для загрузки списка групп товаров из файла
+    private void loadGroupNamesFromFile() {
+        try {
+            File file = new File(groupsFileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                groupNameBox.addItem(line);
+            }
+            reader.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при завантаженні списку груп товарів.");
         }
     }
 
