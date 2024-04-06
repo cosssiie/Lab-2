@@ -4,10 +4,18 @@ import java.io.*;
 
 public class AddProducts extends JFrame {
 
+    /**Вибір функції: додати групу товарів/додати товар */
     private JComboBox<String> chooseFunction;
+
+    /**Ввести назву товару/ групи товарів */
     private JTextField nameOfProduct;
+
+    /**Вибір групи товарів, куди додати товар */
     private JComboBox<String> groupNameBox;
+
+    /**Кнопка "зберегти" */
     private JButton saveButton;
+
 
     private static final int width = 600;
     private static final int height = 600;
@@ -15,8 +23,8 @@ public class AddProducts extends JFrame {
     private static final int heightOfField = 70;
     private static final int widthOfButton = 170;
     private static final int heightOfButton = 70;
-
-    private static final String groupsFileName = "GroupsOfProducts.txt"; // Файл для хранения списка групп товаров
+    
+    private static final String groupsFileName = "GroupsOfProducts.txt"; //файл для збереження груп товарів
 
     public AddProducts(String name) {
         super();
@@ -25,10 +33,10 @@ public class AddProducts extends JFrame {
         this.getContentPane().setLayout(null);
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
         init();
-        this.add(chooseFunction);
-        this.add(nameOfProduct);
-        this.add(groupNameBox);
-        this.add(saveButton);
+        this.add(chooseFunction); //додати товар
+        this.add(nameOfProduct);  //назва товару/групи товарів
+        this.add(groupNameBox);  //додані групи товарів
+        this.add(saveButton);   //кнопка "зберігти"
     }
 
     private void init() {
@@ -64,7 +72,7 @@ public class AddProducts extends JFrame {
         groupNameBox.setVisible(false);
         this.getContentPane().add(groupNameBox);
 
-        // Загружаем список групп товаров из файла
+
         loadGroupNamesFromFile();
 
         saveButton = new JButton("Зберегти");
@@ -95,8 +103,7 @@ public class AddProducts extends JFrame {
             }
         });
     }
-
-    // Метод для добавления новой группы товаров
+    
     private void addGroup(String groupName) {
         try {
             FileWriter writer = new FileWriter(groupsFileName, true);
@@ -109,7 +116,7 @@ public class AddProducts extends JFrame {
         }
     }
 
-    // Метод для добавления товара в указанную группу
+
     private void addProductToGroup(String groupName, String productName) {
         try {
             File groupFile = new File(groupName + ".txt");
@@ -123,7 +130,6 @@ public class AddProducts extends JFrame {
         }
     }
 
-    // Метод для загрузки списка групп товаров из файла
     private void loadGroupNamesFromFile() {
         try {
             File file = new File(groupsFileName);
