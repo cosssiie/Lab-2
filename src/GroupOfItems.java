@@ -1,5 +1,6 @@
 public class GroupOfItems {
 
+
      //*Назва групи товарів */
      private String nameOfGroup;
 

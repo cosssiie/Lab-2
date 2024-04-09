@@ -30,8 +30,8 @@ public class Interface extends JFrame{
 
         if (choose == null){
            choose = new JComboBox<>(); 
-           choose.addItem("Додати новий товар");
-           choose.addItem("Списати товар");
+           choose.addItem("Додати товар / групу товарів");
+           choose.addItem("Видалити товар / групу товарів");
            choose.addItem("Пошук товару");
            choose.setBounds(0, 0, 150, 30); 
            this.getContentPane().add(choose); 
