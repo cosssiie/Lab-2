@@ -283,7 +283,7 @@ public class AddProducts extends JFrame {
             groupNameBox.addItem(groupName);
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Ошибка при добавлении группы товаров.");
+            JOptionPane.showMessageDialog(this, "Помилка при додаванні групи товарів.");
         }
     }
 
