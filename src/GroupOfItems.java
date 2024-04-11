@@ -1,11 +1,11 @@
 public class GroupOfItems {
 
 
-     //*Назва групи товарів */
-     private String nameOfGroup;
+     /**Назва групи товарів */
+     public String nameOfGroup;
 
-     //*Опис групи товарів */
-     private String descriptionOfGroup;
+     /**Опис групи товарів */
+     public String descriptionOfGroup;
 
      public GroupOfItems(String nameOfGroup, String descriptionOfGroup){
         this.nameOfGroup = nameOfGroup;
@@ -24,7 +24,6 @@ public class GroupOfItems {
         return "\nНазва групи товарів: " + nameOfGroup +
         "\nОпис групи товарів: " + descriptionOfGroup;
     }
-
 
 }
 

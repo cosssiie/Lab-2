@@ -1,21 +1,21 @@
 public class Items {
 
-    //*Назва товару */
-    private String name;
+    /**Назва товару */
+    public static String name;
 
-    //*Опис товару */
-    private String description;
+    /**Опис товару */
+    public static String description;
 
-    //*Виробник товару */
-    private String producer;
+    /**Виробник товару */
+    public static String producer;
 
-    //*Кількість товару на складі*/
-    private int count;
+    /**Кількість товару на складі*/
+    public static int count;
 
-    //*ціна за одиницю */
-    private double pricePerOne;
+    /**Ціна за одиницю */
+    public static int pricePerOne;
 
-    public Items(String name, String description, String producer, int count, double pricePerOne){
+    public Items(String name, String description, String producer, int count, int pricePerOne){
         this.name = name;
         this.description = description;
         this.producer = producer;

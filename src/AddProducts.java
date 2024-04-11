@@ -3,10 +3,15 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
+import static java.lang.Integer.parseInt;
+
 public class AddProducts extends JFrame {
 
     /**Масив для зберігання груп товарів */
     private ArrayList<GroupOfItems> groupsList = new ArrayList<>();
+
+    /**Масив для зберігання товарів */
+    private ArrayList<Items> productsList = new ArrayList<Items>();
 
     /**Вибір функції: додати групу товарів/додати товар */
     private JComboBox<String> chooseFunction;
@@ -17,21 +22,45 @@ public class AddProducts extends JFrame {
     /**Ввести опис групи товарів */
     private JTextField descriptionOfGroup;
 
+    /**Ввести назву товару */
+    private JTextField nameOfProduct;
+
+    /**Ввести опис товару */
+    private JTextField descriptionOfproduct;
+
+    /**Ввести виробника товару */
+    private JTextField producerOfProduct;
+
+    /**Ввести кількість товарів */
+    private JTextField countOfProduct;
+
+    /**Ввести ціну товару */
+    private JTextField priceOfProduct;
+
     /**Вибір групи товарів, куди додати товар */
     private JComboBox<String> groupNameBox;
 
     /**Кнопка "зберегти" */
     private JButton saveButton;
 
-    /**Напис назви групи*/
+    /**Напис назви */
     private JLabel typeName;
 
-    /**Напис опису групи*/
+    /**Напис опису */
     private JLabel typeDescription;
 
+    /**Напис виробника */
+    private JLabel typeProducer;
 
-    private static final int width = 600;
-    private static final int height = 600;
+    /**Напис кількості */
+    private JLabel typeCount;
+
+    /**Напис ціни */
+    private JLabel typePrice;
+
+
+    private static final int width = 800;
+    private static final int height = 700;
     private static final int widthOfField = 350;
     private static final int heightOfField = 70;
     private static final int widthOfButton = 170;
@@ -58,58 +87,84 @@ public class AddProducts extends JFrame {
         chooseFunction.setRenderer(renderer);
         Font font = chooseFunction.getFont();
         chooseFunction.setFont(font.deriveFont(Font.BOLD, 16f));
-        chooseFunction.setBounds(width/2 - widthOfField/2, height/2 - heightOfField*3 , widthOfField, heightOfField);
+        chooseFunction.setBounds(width/2 - widthOfField/2, height/2 - heightOfField*4 , widthOfField, heightOfField);
         this.getContentPane().add(chooseFunction);
 
         chooseFunction.addActionListener(e -> {
-            if (chooseFunction.getSelectedIndex() == 1) {
-                groupNameBox.setVisible(true);
-                descriptionOfGroup.setVisible(false);
-                typeDescription.setVisible(false);
-                nameOfGroup.setBounds(width/2 - widthOfField/2, height/2 + heightOfField , widthOfField, heightOfField);
-                typeName.setText("Назва групи товарів:");
-                typeName.setBounds(width/2 - widthOfField/2, height/2 + heightOfField/4 , widthOfField, heightOfField);
-
-            } else {
+            if (chooseFunction.getSelectedIndex() == 0) {
                 groupNameBox.setVisible(false);
                 descriptionOfGroup.setVisible(true);
                 descriptionOfGroup.setBounds(width/2 - widthOfField/2, height/2 + heightOfField , widthOfField, heightOfField);
                 typeDescription.setVisible(true);
-                typeDescription.setBounds(width/2 - widthOfField/2, height/2 + heightOfField/4 , widthOfField, heightOfField);
+                typeDescription.setBounds(width/2 - widthOfField/2, height/2  , widthOfField, heightOfField);
                 nameOfGroup.setBounds(width/2 - widthOfField/2, height/2 - heightOfField , widthOfField, heightOfField);
+                typeName.setText("Назва групи товарів:");
                 typeName.setBounds(width/2 - widthOfField/2, height/2 - heightOfField*2 , widthOfField, heightOfField);
+
+
+            } else {
+                groupNameBox.setVisible(true);
+                descriptionOfGroup.setVisible(false);
+                typeDescription.setVisible(false);
+                nameOfGroup.setBounds(width/2 - widthOfField/2, height/2 + heightOfField , widthOfField, heightOfField);
+                typeName.setText("Назва товару:");
+                typeName.setBounds(width/2 - widthOfField/2, height/2 + heightOfField/4 , widthOfField, heightOfField);
 
 
             }
         });
 
-        typeName = new JLabel();
-        typeName.setText("Назва групи товарів: ");
-        typeName.setBounds(width/2 - widthOfField/2, 175 , widthOfField, heightOfField);
+        typeName = new JLabel("Назва групи товарів: ");
+        typeName.setBounds(width/2 - widthOfField/2, height/2 - heightOfField*2 , widthOfField, heightOfField);
         typeName.setFont(font.deriveFont(Font.BOLD, 16f));
         this.getContentPane().add(typeName);
 
-        typeDescription = new JLabel();
-        typeDescription.setText("Опис групи товарів: ");
-        typeDescription.setBounds(width/2 - widthOfField/2, 280 , widthOfField, heightOfField);
+        typeDescription = new JLabel("Опис групи товарів: ");
+        typeDescription.setBounds(width/2 - widthOfField/2, height/2  , widthOfField, heightOfField);
         typeDescription.setFont(font.deriveFont(Font.BOLD, 16f));
         this.getContentPane().add(typeDescription);
 
 
         nameOfGroup = new JTextField();
-        nameOfGroup.setBounds(width/2 - widthOfField/2, height/2 - heightOfField , widthOfField, heightOfField);
         nameOfGroup.setHorizontalAlignment(JTextField.CENTER);
+        nameOfGroup.setBounds(width/2 - widthOfField/2, height/2 - heightOfField , widthOfField, heightOfField);
         nameOfGroup.setFont(font.deriveFont(Font.BOLD, 16f));
         this.getContentPane().add(nameOfGroup);
 
         descriptionOfGroup = new JTextField();
-        descriptionOfGroup.setBounds(width/2 - widthOfField/2, height/2 + heightOfField/2 , widthOfField, heightOfField);
         descriptionOfGroup.setHorizontalAlignment(JTextField.CENTER);
+        descriptionOfGroup.setBounds(width/2 - widthOfField/2, height/2 + heightOfField , widthOfField, heightOfField);
         descriptionOfGroup.setFont(font.deriveFont(Font.BOLD, 16f));
         this.getContentPane().add(descriptionOfGroup);
 
+        nameOfProduct = new JTextField();
+        nameOfProduct.setHorizontalAlignment(JTextField.CENTER);
+        nameOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
+        this.getContentPane().add(nameOfProduct);
+
+        descriptionOfproduct = new JTextField();
+        descriptionOfproduct.setHorizontalAlignment(JTextField.CENTER);
+        descriptionOfproduct.setFont(font.deriveFont(Font.BOLD, 16f));
+        this.getContentPane().add(descriptionOfproduct);
+
+        producerOfProduct = new JTextField();
+        producerOfProduct.setHorizontalAlignment(JTextField.CENTER);
+        producerOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
+        this.getContentPane().add(producerOfProduct);
+
+        countOfProduct = new JTextField();
+        countOfProduct.setHorizontalAlignment(JTextField.CENTER);
+        countOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
+        this.getContentPane().add(countOfProduct);
+
+        priceOfProduct = new JTextField();
+        priceOfProduct.setHorizontalAlignment(JTextField.CENTER);
+        priceOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
+        this.getContentPane().add(priceOfProduct);
+
+
         groupNameBox = new JComboBox<>();
-        groupNameBox.setBounds(width/2 - widthOfField/2, 215 , widthOfField, heightOfField);
+        groupNameBox.setBounds(width/2 - widthOfField/2, 145 , widthOfField, heightOfField);
         groupNameBox.setRenderer(renderer);
         groupNameBox.setFont(font.deriveFont(Font.BOLD, 16f));
         groupNameBox.setVisible(false);
@@ -141,16 +196,8 @@ public class AddProducts extends JFrame {
                 nameOfGroup.setText("");
                 descriptionOfGroup.setText("");
             }
-        } else if (chooseFunction.getSelectedIndex() == 1) {
-            String groupName = (String) groupNameBox.getSelectedItem();
-            String description = descriptionOfGroup.getText();
-            if (!groupName.isEmpty() && !description.isEmpty()) {
-                addGroup(groupName, description);
-                nameOfGroup.setText("");
-            }
         }
     }
-
 
     private void addGroup(String groupName, String description) {
         GroupOfItems group = new GroupOfItems(groupName, description);
@@ -160,27 +207,29 @@ public class AddProducts extends JFrame {
             FileWriter writer = new FileWriter(groupsFileName, true);
             writer.write(groupName + "\n");
             writer.close();
-            JOptionPane.showMessageDialog(this, "Група товарів \"" + groupName + "\" успішно додана!");
+            JOptionPane.showMessageDialog(this, "Группа товаров \"" + groupName + "\" успешно добавлена!");
 
             groupNameBox.addItem(groupName);
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при додаванні групи товарів.");
+            JOptionPane.showMessageDialog(this, "Ошибка при добавлении группы товаров.");
         }
     }
 
-//    private void addProductToGroup(String groupName, String productName) {
-//        try {
-//            File groupFile = new File(groupName + ".txt");
-//            FileWriter writer = new FileWriter(groupFile, true);
-//            writer.write(productName + "\n");
-//            writer.close();
-//            JOptionPane.showMessageDialog(this, "Товар \"" + productName + "\" успішно доданий в групу \"" + groupName + "\"!");
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//            JOptionPane.showMessageDialog(this, "Помилка при додаванні товару в групу.");
-//        }
-//    }
+    private void addProductToGroup(String groupName, String name, String description, String producer, int count, int pricePerOne) {
+        Items item = new Items(name, description, producer, count, pricePerOne);
+        productsList.add(item);
+        try {
+            File groupFile = new File(groupName + ".txt");
+            FileWriter writer = new FileWriter(groupFile, true);
+            writer.write(name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
+            writer.close();
+            JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успешно добавлен в группу \"" + groupName + "\"!");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Ошибка при добавлении товара в группу.");
+        }
+    }
 
     private void loadGroupNamesFromFile() {
         try {
@@ -196,12 +245,12 @@ public class AddProducts extends JFrame {
             reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при завантаженні списку груп товарів.");
+            JOptionPane.showMessageDialog(this, "Ошибка при загрузке списка групп товаров.");
         }
     }
 
     public static void main(String[] args) {
-        AddProducts products = new AddProducts("Add products");
+        AddProducts products = new AddProducts("Добавление товаров");
         products.setVisible(true);
     }
 }
