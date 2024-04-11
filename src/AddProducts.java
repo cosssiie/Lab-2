@@ -61,7 +61,7 @@ public class AddProducts extends JFrame {
 
     private static final int width = 800;
     private static final int height = 700;
-    private static final int widthOfField = 350;
+    private static final int widthOfField = 300;
     private static final int heightOfField = 70;
     private static final int widthOfButton = 170;
     private static final int heightOfButton = 70;
@@ -87,29 +87,57 @@ public class AddProducts extends JFrame {
         chooseFunction.setRenderer(renderer);
         Font font = chooseFunction.getFont();
         chooseFunction.setFont(font.deriveFont(Font.BOLD, 16f));
-        chooseFunction.setBounds(width/2 - widthOfField/2, height/2 - heightOfField*4 , widthOfField, heightOfField);
+        chooseFunction.setBounds(width/2 - widthOfField/2, height/2 - 300 , widthOfField, heightOfField);
         this.getContentPane().add(chooseFunction);
 
         chooseFunction.addActionListener(e -> {
             if (chooseFunction.getSelectedIndex() == 0) {
+
                 groupNameBox.setVisible(false);
+
                 descriptionOfGroup.setVisible(true);
-                descriptionOfGroup.setBounds(width/2 - widthOfField/2, height/2 + heightOfField , widthOfField, heightOfField);
+
                 typeDescription.setVisible(true);
                 typeDescription.setBounds(width/2 - widthOfField/2, height/2  , widthOfField, heightOfField);
-                nameOfGroup.setBounds(width/2 - widthOfField/2, height/2 - heightOfField , widthOfField, heightOfField);
+
+                nameOfGroup.setVisible(true);
+
                 typeName.setText("Назва групи товарів:");
                 typeName.setBounds(width/2 - widthOfField/2, height/2 - heightOfField*2 , widthOfField, heightOfField);
+
+                nameOfProduct.setVisible(false);
+                descriptionOfproduct.setVisible(false);
+                producerOfProduct.setVisible(false);
+                countOfProduct.setVisible(false);
+                priceOfProduct.setVisible(false);
+
+                typeProducer.setVisible(false);
+                typeCount.setVisible(false);
+                typePrice.setVisible(false);
 
 
             } else {
                 groupNameBox.setVisible(true);
-                descriptionOfGroup.setVisible(false);
-                typeDescription.setVisible(false);
-                nameOfGroup.setBounds(width/2 - widthOfField/2, height/2 + heightOfField , widthOfField, heightOfField);
-                typeName.setText("Назва товару:");
-                typeName.setBounds(width/2 - widthOfField/2, height/2 + heightOfField/4 , widthOfField, heightOfField);
 
+                nameOfProduct.setVisible(true);
+                descriptionOfproduct.setVisible(true);
+                producerOfProduct.setVisible(true);
+                countOfProduct.setVisible(true);
+                priceOfProduct.setVisible(true);
+
+                nameOfGroup.setVisible(false);
+                descriptionOfGroup.setVisible(false);
+
+                typeName.setText("Назва товару:");
+                typeName.setBounds(width/2 - 270, height/2 - heightOfField*2 , widthOfField, heightOfField);
+
+                typeDescription.setVisible(true);
+                typeDescription.setText("Опис товару:");
+                typeDescription.setBounds(width/2 + widthOfField/2, height/2 - heightOfField*2 , widthOfField, heightOfField);
+
+                typeProducer.setVisible(true);
+                typeCount.setVisible(true);
+                typePrice.setVisible(true);
 
             }
         });
@@ -123,6 +151,24 @@ public class AddProducts extends JFrame {
         typeDescription.setBounds(width/2 - widthOfField/2, height/2  , widthOfField, heightOfField);
         typeDescription.setFont(font.deriveFont(Font.BOLD, 16f));
         this.getContentPane().add(typeDescription);
+
+        typeProducer = new JLabel("Виробник: ");
+        typeProducer.setBounds(width/2 - 270, height/2 - 40 , widthOfField, heightOfField);
+        typeProducer.setFont(font.deriveFont(Font.BOLD, 16f));
+        this.getContentPane().add(typeProducer);
+        typeProducer.setVisible(false);
+
+        typeCount = new JLabel("Кількість на складі: ");
+        typeCount.setBounds(width/2 + widthOfField/2, height/2 - 40 , widthOfField, heightOfField);
+        typeCount.setFont(font.deriveFont(Font.BOLD, 16f));
+        this.getContentPane().add(typeCount);
+        typeCount.setVisible(false);
+
+        typePrice = new JLabel("Ціна за одиницю: ");
+        typePrice.setBounds(width/2 - 55, height/2  + 60, widthOfField, heightOfField);
+        typePrice.setFont(font.deriveFont(Font.BOLD, 16f));
+        this.getContentPane().add(typePrice);
+        typePrice.setVisible(false);
 
 
         nameOfGroup = new JTextField();
@@ -139,32 +185,41 @@ public class AddProducts extends JFrame {
 
         nameOfProduct = new JTextField();
         nameOfProduct.setHorizontalAlignment(JTextField.CENTER);
+        nameOfProduct.setBounds(width/2 - 350, height/2 - 90 , widthOfField, heightOfField);
         nameOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
         this.getContentPane().add(nameOfProduct);
+        nameOfProduct.setVisible(false);
 
         descriptionOfproduct = new JTextField();
         descriptionOfproduct.setHorizontalAlignment(JTextField.CENTER);
+        descriptionOfproduct.setBounds(width/2 + 50, height/2 - 90, widthOfField, heightOfField);
         descriptionOfproduct.setFont(font.deriveFont(Font.BOLD, 16f));
         this.getContentPane().add(descriptionOfproduct);
+        descriptionOfproduct.setVisible(false);
 
         producerOfProduct = new JTextField();
         producerOfProduct.setHorizontalAlignment(JTextField.CENTER);
         producerOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
+        producerOfProduct.setBounds(width/2 - 350, 365 , widthOfField, heightOfField);
         this.getContentPane().add(producerOfProduct);
+        producerOfProduct.setVisible(false);
 
         countOfProduct = new JTextField();
         countOfProduct.setHorizontalAlignment(JTextField.CENTER);
         countOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
+        countOfProduct.setBounds(width/2 + 50, 365, widthOfField, heightOfField);
         this.getContentPane().add(countOfProduct);
+        countOfProduct.setVisible(false);
 
         priceOfProduct = new JTextField();
         priceOfProduct.setHorizontalAlignment(JTextField.CENTER);
         priceOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
+        priceOfProduct.setBounds(width/2 - widthOfField/2, 460, widthOfField, heightOfField);
         this.getContentPane().add(priceOfProduct);
-
+        priceOfProduct.setVisible(false);
 
         groupNameBox = new JComboBox<>();
-        groupNameBox.setBounds(width/2 - widthOfField/2, 145 , widthOfField, heightOfField);
+        groupNameBox.setBounds(width/2 - widthOfField/2, 130 , widthOfField, heightOfField);
         groupNameBox.setRenderer(renderer);
         groupNameBox.setFont(font.deriveFont(Font.BOLD, 16f));
         groupNameBox.setVisible(false);
@@ -189,12 +244,28 @@ public class AddProducts extends JFrame {
     private void saveButtonActionPerformed() {
         if (chooseFunction.getSelectedIndex() == 0) {
             String groupName = nameOfGroup.getText();
-            String description = descriptionOfGroup.getText();
+            String groupDescription = descriptionOfGroup.getText();
 
-            if (!groupName.isEmpty() && !description.isEmpty()) {
-                addGroup(groupName, description);
+            if (!groupName.isEmpty() && !groupDescription.isEmpty()) {
+                addGroup(groupName, groupDescription);
                 nameOfGroup.setText("");
                 descriptionOfGroup.setText("");
+            }
+        }else{
+            String groupName = groupNameBox.getSelectedItem().toString();
+            String name = nameOfProduct.getText();
+            String description = descriptionOfproduct.getText();
+            String producer = producerOfProduct.getText();
+            int count = parseInt(countOfProduct.getText());
+            int price = parseInt(priceOfProduct.getText());
+
+            if (!name.isEmpty() && !description.isEmpty() && !producer.isEmpty() && count > 0 && price > 0) {
+                addProductToGroup(groupName, name, description, producer, count, price);
+                nameOfProduct.setText("");
+                descriptionOfproduct.setText("");
+                producerOfProduct.setText("");
+                countOfProduct.setText("");
+                priceOfProduct.setText("");
             }
         }
     }
@@ -207,7 +278,7 @@ public class AddProducts extends JFrame {
             FileWriter writer = new FileWriter(groupsFileName, true);
             writer.write(groupName + "\n");
             writer.close();
-            JOptionPane.showMessageDialog(this, "Группа товаров \"" + groupName + "\" успешно добавлена!");
+            JOptionPane.showMessageDialog(this, "Група товарів \"" + groupName + "\" успішно додана!");
 
             groupNameBox.addItem(groupName);
         } catch (IOException ex) {
@@ -224,10 +295,10 @@ public class AddProducts extends JFrame {
             FileWriter writer = new FileWriter(groupFile, true);
             writer.write(name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
             writer.close();
-            JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успешно добавлен в группу \"" + groupName + "\"!");
+            JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Ошибка при добавлении товара в группу.");
+            JOptionPane.showMessageDialog(this, "Помилка при додаванні товару.");
         }
     }
 
@@ -245,12 +316,12 @@ public class AddProducts extends JFrame {
             reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Ошибка при загрузке списка групп товаров.");
+            JOptionPane.showMessageDialog(this, "Помилка при завантаженні груп товарів.");
         }
     }
 
     public static void main(String[] args) {
-        AddProducts products = new AddProducts("Добавление товаров");
+        AddProducts products = new AddProducts("Додавання товарів");
         products.setVisible(true);
     }
 }

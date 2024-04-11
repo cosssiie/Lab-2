@@ -5,24 +5,24 @@ public class GroupOfItems {
      public String nameOfGroup;
 
      /**Опис групи товарів */
-     public String descriptionOfGroup;
+     public String groupDescription;
 
      public GroupOfItems(String nameOfGroup, String descriptionOfGroup){
         this.nameOfGroup = nameOfGroup;
-        this.descriptionOfGroup = descriptionOfGroup; 
+        this.groupDescription = descriptionOfGroup;
     }
 
     public String getNameOfGroup() {
         return nameOfGroup;
     }
 
-    public String getDescriptionOfGroup() {
-        return descriptionOfGroup;
+    public String getGroupDescription() {
+        return groupDescription;
     }
 
     public String toString(){
         return "\nНазва групи товарів: " + nameOfGroup +
-        "\nОпис групи товарів: " + descriptionOfGroup;
+        "\nОпис групи товарів: " + groupDescription;
     }
 
 }
