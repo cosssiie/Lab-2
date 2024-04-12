@@ -8,10 +8,10 @@ import static java.lang.Integer.parseInt;
 public class AddProducts extends JFrame {
 
     /**Масив для зберігання груп товарів */
-    private ArrayList<GroupOfItems> groupsList = new ArrayList<>();
+    public ArrayList<GroupOfItems> groupsList = new ArrayList<>();
 
     /**Масив для зберігання товарів */
-    private ArrayList<Items> productsList = new ArrayList<Items>();
+    public ArrayList<Items> productsList = new ArrayList<Items>();
 
     /**Вибір функції: додати групу товарів/додати товар */
     private JComboBox<String> chooseFunction;
@@ -38,10 +38,10 @@ public class AddProducts extends JFrame {
     private JTextField priceOfProduct;
 
     /**Вибір групи товарів, куди додати товар */
-    private JComboBox<String> groupNameBox;
+    public JComboBox<String> groupNameBox;
 
     /**Кнопка "зберегти" */
-    private JButton saveButton;
+    public JButton saveButton;
 
     /**Напис назви */
     private JLabel typeName;
@@ -66,7 +66,7 @@ public class AddProducts extends JFrame {
     private static final int widthOfButton = 170;
     private static final int heightOfButton = 70;
     
-    private static final String groupsFileName = "GroupsOfProducts.txt"; //файл для збереження груп товарів
+    public static final String groupsFileName = "GroupsOfProducts.txt"; //файл для збереження груп товарів
 
     public AddProducts(String name) {
         super();
