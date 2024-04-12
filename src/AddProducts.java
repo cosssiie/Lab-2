@@ -8,7 +8,7 @@ import static java.lang.Integer.parseInt;
 public class AddProducts extends JFrame {
 
     /**Масив для зберігання груп товарів */
-    public ArrayList<GroupOfItems> groupsList = new ArrayList<>();
+    public static ArrayList<GroupOfItems> groupsList = new ArrayList<>();
 
     /**Масив для зберігання товарів */
     public ArrayList<Items> productsList = new ArrayList<Items>();
@@ -323,5 +323,6 @@ public class AddProducts extends JFrame {
     public static void main(String[] args) {
         AddProducts products = new AddProducts("Додавання товарів");
         products.setVisible(true);
+
     }
 }
