@@ -11,7 +11,7 @@ public class AddProducts extends JFrame {
     public static ArrayList<GroupOfItems> groupsList = new ArrayList<>();
 
     /**Масив для зберігання товарів */
-    public ArrayList<Items> productsList = new ArrayList<Items>();
+    public static ArrayList<Items> productsList = new ArrayList<Items>();
 
     /**Вибір функції: додати групу товарів/додати товар */
     private JComboBox<String> chooseFunction;
@@ -67,6 +67,9 @@ public class AddProducts extends JFrame {
     private static final int heightOfButton = 70;
     
     public static final String groupsFileName = "GroupsOfProducts.txt"; //файл для збереження груп товарів
+    public static final String allProducts = "AllProducts.txt"; //файл для збереження груп товарів
+
+
 
     public AddProducts(String name) {
         super();
@@ -271,7 +274,6 @@ public class AddProducts extends JFrame {
     }
 
     private void addGroup(String groupName, String description) {
-
         if (isGroupUnique(groupName)) {
             GroupOfItems group = new GroupOfItems(groupName, description);
             groupsList.add(group);
@@ -287,8 +289,7 @@ public class AddProducts extends JFrame {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Помилка при додаванні групи товарів.");
             }
-        }
-        else{
+        } else {
             JOptionPane.showMessageDialog(this, "Група товарів з такою назвою вже існує!");
         }
     }
@@ -298,20 +299,27 @@ public class AddProducts extends JFrame {
             Items item = new Items(name, description, producer, count, pricePerOne);
             productsList.add(item);
             try {
+                // Зберігання товару в файлі групи
                 File groupFile = new File(groupName + ".txt");
                 FileWriter writer = new FileWriter(groupFile, true);
                 writer.write(name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
                 writer.close();
+
+                // Збереження товару в файлі "AllProducts.txt"
+                FileWriter allProductsWriter = new FileWriter(allProducts, true);
+                allProductsWriter.write(groupName + "," + name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
+                allProductsWriter.close();
+
                 JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");
             } catch (IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Помилка при додаванні товару.");
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(this, "Товар з такою назвою вже існує в обраній групі!");
-
         }
     }
+
 
     private void loadGroupNamesFromFile() {
         try {
