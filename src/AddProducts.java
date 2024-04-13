@@ -271,34 +271,45 @@ public class AddProducts extends JFrame {
     }
 
     private void addGroup(String groupName, String description) {
-        GroupOfItems group = new GroupOfItems(groupName, description);
-        groupsList.add(group);
 
-        try {
-            FileWriter writer = new FileWriter(groupsFileName, true);
-            writer.write(groupName + "\n");
-            writer.close();
-            JOptionPane.showMessageDialog(this, "Група товарів \"" + groupName + "\" успішно додана!");
+        if (isGroupUnique(groupName)) {
+            GroupOfItems group = new GroupOfItems(groupName, description);
+            groupsList.add(group);
 
-            groupNameBox.addItem(groupName);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при додаванні групи товарів.");
+            try {
+                FileWriter writer = new FileWriter(groupsFileName, true);
+                writer.write(groupName + "\n");
+                writer.close();
+                JOptionPane.showMessageDialog(this, "Група товарів \"" + groupName + "\" успішно додана!");
+
+                groupNameBox.addItem(groupName);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Помилка при додаванні групи товарів.");
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Група товарів з такою назвою вже існує!");
         }
     }
 
     private void addProductToGroup(String groupName, String name, String description, String producer, int count, int pricePerOne) {
-        Items item = new Items(name, description, producer, count, pricePerOne);
-        productsList.add(item);
-        try {
-            File groupFile = new File(groupName + ".txt");
-            FileWriter writer = new FileWriter(groupFile, true);
-            writer.write(name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
-            writer.close();
-            JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при додаванні товару.");
+        if (isProductUnique(groupName, name)) {
+            Items item = new Items(name, description, producer, count, pricePerOne);
+            productsList.add(item);
+            try {
+                File groupFile = new File(groupName + ".txt");
+                FileWriter writer = new FileWriter(groupFile, true);
+                writer.write(name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
+                writer.close();
+                JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Помилка при додаванні товару.");
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "Товар з такою назвою вже існує в обраній групі!");
+
         }
     }
 
@@ -319,6 +330,50 @@ public class AddProducts extends JFrame {
             JOptionPane.showMessageDialog(this, "Помилка при завантаженні груп товарів.");
         }
     }
+
+    private boolean isGroupUnique(String groupName) {
+        try {
+            File groupFile = new File(groupsFileName);
+            if (groupFile.exists()) {
+                BufferedReader reader = new BufferedReader(new FileReader(groupFile));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parameters = line.split(",");
+                    if (parameters.length > 0 && parameters[0].equals(groupName)) {
+                        reader.close();
+                        return false;
+                    }
+                }
+                reader.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return true;
+    }
+
+    private boolean isProductUnique(String groupName, String productName) {
+        try {
+            File groupFile = new File(groupName + ".txt");
+            if (groupFile.exists()) {
+                BufferedReader reader = new BufferedReader(new FileReader(groupFile));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parameters = line.split(",");
+                    if (parameters.length > 0 && parameters[0].equals(productName)) {
+                        reader.close();
+                        return false;
+                    }
+                }
+                reader.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return true;
+    }
+
+
 
     public static void main(String[] args) {
         AddProducts products = new AddProducts("Додавання товарів");
