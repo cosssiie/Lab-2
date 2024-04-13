@@ -169,7 +169,8 @@ public class SupplyOfProducts extends JFrame {
                         return;
                     }
                     else{
-                        JOptionPane.showMessageDialog(this, "Товар успішно списано.");
+                        JOptionPane.showMessageDialog(this, "Товар успішно списано.\n Актуальна кількість товару " + newCount);
+
                     }
                     parameters[3] = String.valueOf(newCount);
                     line = String.join(",", parameters);
@@ -194,11 +195,12 @@ public class SupplyOfProducts extends JFrame {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             StringBuilder sb = new StringBuilder();
             String line;
+            int newCount = 0;
             while ((line = reader.readLine()) != null) {
                 String[] parameters = line.split(",");
                 if (parameters.length > 0 && parameters[0].equals(productName)) {
                     int currentCount = Integer.parseInt(parameters[3]);
-                    int newCount = currentCount + quantityToAdd;
+                    newCount = currentCount + quantityToAdd;
                     parameters[3] = String.valueOf(newCount);
                     line = String.join(",", parameters);
                 }
@@ -207,6 +209,8 @@ public class SupplyOfProducts extends JFrame {
             reader.close();
 
             Files.write(Paths.get(selectedGroup), sb.toString().getBytes());
+            JOptionPane.showMessageDialog(this, "Товар успішно додано.\n Актуальна кількість товару " + newCount);
+
         } catch (IOException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Помилка при додаванні товарів.");
@@ -225,7 +229,6 @@ public class SupplyOfProducts extends JFrame {
             supplyCount.setText("");
         } else {
             addItems(selectedGroup, selectedProduct, quantity);
-            JOptionPane.showMessageDialog(this, "Товар успішно додано.");
             supplyCount.setText("");
         }
     }
