@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class SupplyOfProducts extends JFrame {
@@ -148,9 +150,86 @@ public class SupplyOfProducts extends JFrame {
     }
 
 
-    private void saveButtonActionPerformed() {
+    private void subtractItems(String selectedGroup, String productName, int quantityToSubtract) {
+        try {
+            File file = new File(selectedGroup);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parameters = line.split(",");
+                if (parameters.length > 0 && parameters[0].equals(productName)) {
+                    int currentCount = Integer.parseInt(parameters[3]);
+                    int newCount = currentCount - quantityToSubtract;
+                    if (newCount < 0) {
+                        JOptionPane.showMessageDialog(this, "Недостатньо товару для списання.");
+                        return;
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(this, "Товар успішно списано.");
+                    }
+                    parameters[3] = String.valueOf(newCount);
+                    line = String.join(",", parameters);
+                }
+                sb.append(line).append("\n");
+            }
+            reader.close();
 
+
+            Files.write(Paths.get(selectedGroup), sb.toString().getBytes());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при списанні товарів.");
+        }
     }
+    private void addItems(String selectedGroup, String productName, int quantityToAdd) {
+        try {
+            File file = new File(selectedGroup);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parameters = line.split(",");
+                if (parameters.length > 0 && parameters[0].equals(productName)) {
+                    int currentCount = Integer.parseInt(parameters[3]);
+                    int newCount = currentCount + quantityToAdd;
+                    parameters[3] = String.valueOf(newCount);
+                    line = String.join(",", parameters);
+                }
+                sb.append(line).append("\n");
+            }
+            reader.close();
+
+            Files.write(Paths.get(selectedGroup), sb.toString().getBytes());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при додаванні товарів.");
+        }
+    }
+
+
+
+    private void saveButtonActionPerformed() {
+        String selectedGroup = (String) (chooseGroup.getSelectedItem() + ".txt");
+        String selectedProduct = (String) chooseProduct.getSelectedItem();
+        int quantity = Integer.parseInt(supplyCount.getText());
+
+        if (chooseFunction.getSelectedIndex() == 0) {
+            subtractItems(selectedGroup, selectedProduct, quantity);
+            supplyCount.setText("");
+        } else {
+            addItems(selectedGroup, selectedProduct, quantity);
+            JOptionPane.showMessageDialog(this, "Товар успішно додано.");
+            supplyCount.setText("");
+        }
+    }
+
 
     public static void main(String[] args) {
         SupplyOfProducts supply = new SupplyOfProducts("Поставка та списання товарів", AddProducts.groupsList);
