@@ -31,12 +31,15 @@ public class ProductSearch extends JFrame {
     private static final int widthOfButton = 170;
     private static final int heightOfButton = 70;
 
+    public static final String allProducts = "AllProducts.txt"; //файл для збереження груп товарів
+
     public ProductSearch(String name) {
         super();
         this.setTitle(name);
         this.setSize(width, height);
         this.getContentPane().setLayout(null);
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
+        this.setLocationRelativeTo(null);
         init();
     }
 
@@ -62,12 +65,7 @@ public class ProductSearch extends JFrame {
         searchButton.setFont(buttonFont.deriveFont(Font.BOLD, 16f));
         this.getContentPane().add(searchButton);
 
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                searchProduct();
-            }
-        });
+        searchButton.addActionListener(e -> searchProduct());
 
         information = new JTextArea(10, 30);
         information.setEditable(false);
@@ -79,9 +77,8 @@ public class ProductSearch extends JFrame {
 
     private void searchProduct() {
         String productName = nameOfProduct.getText();
-        if (!productName.isEmpty()) {
-            String groupFileName = "AllProducts.txt";
-            File groupFile = new File(groupFileName);
+        if (!productName.trim().isEmpty()) {
+            File groupFile = new File(allProducts);
             if (groupFile.exists()) {
                 String productInfo = readProductInfoFromFile(groupFile, productName);
                 information.setText(productInfo);
@@ -114,6 +111,7 @@ public class ProductSearch extends JFrame {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
+            information.setText("Помилка при зчитуванні файлу.");
         }
         return productInfo.toString();
     }

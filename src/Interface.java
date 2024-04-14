@@ -21,6 +21,7 @@ public class Interface extends JFrame{
         this.setTitle(name);
         this.setSize(width, height);
         this.getContentPane().setLayout(null);
+        this.setLocationRelativeTo(null);
         init();
         this.add(choose);
        

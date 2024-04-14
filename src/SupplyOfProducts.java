@@ -27,6 +27,7 @@ public class SupplyOfProducts extends JFrame {
     private JLabel supplyCountLabel;
 
     public static final String groupsFileName = "GroupsOfProducts.txt";
+    public static final String allProducts = "AllProducts.txt"; //файл для збереження груп товарів
 
     private static final int width = 800;
     private static final int height = 700;
@@ -41,6 +42,7 @@ public class SupplyOfProducts extends JFrame {
         this.setSize(width, height);
         this.getContentPane().setLayout(null);
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
+        this.setLocationRelativeTo(null);
         init(groupsList);
         loadGroupNamesFromFile();
     }
@@ -103,9 +105,20 @@ public class SupplyOfProducts extends JFrame {
         });
 
         chooseGroup.addActionListener(e -> {
-            String selectedGroup = (String) (chooseGroup.getSelectedItem() + ".txt");
+            String selectedGroup = chooseGroup.getSelectedItem() + ".txt";
             loadItemsForSelectedGroup(selectedGroup);
         });
+
+        chooseProduct.addActionListener(e -> {
+            if (chooseFunction.getSelectedIndex() == 0) {
+                showQuantityOfProduct();
+            }
+        });
+    }
+
+    private void showQuantityOfProduct() {
+        //TODO вивести у supplyCountLabel (додати до початку рядка) кількість товару, яка наявна
+        //System.out.println("showQuantityOfProduct");
     }
 
     private void loadItemsForSelectedGroup(String selectedGroup) {
@@ -127,7 +140,7 @@ public class SupplyOfProducts extends JFrame {
             reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при завантаженні товарів для обраної групи.");
+            JOptionPane.showMessageDialog(this, "Помилка при завантаженні товарів для обраної групи.", "Помилка", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -146,7 +159,7 @@ public class SupplyOfProducts extends JFrame {
             reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при завантаженні імен груп товарів.");
+            JOptionPane.showMessageDialog(this, "Помилка при завантаженні імен груп товарів.", "Помилка", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -167,10 +180,11 @@ public class SupplyOfProducts extends JFrame {
                     int currentCount = Integer.parseInt(parameters[3]);
                     newCount = currentCount - quantityToSubtract;
                     if (newCount < 0) {
-                        JOptionPane.showMessageDialog(this, "Недостатньо товару для списання.");
+                        JOptionPane.showMessageDialog(this, "Недостатньо товару для списання.", "Помилка", JOptionPane.ERROR_MESSAGE);
                         return;
                     } else {
                         JOptionPane.showMessageDialog(this, "Товар успішно списано.\n Актуальна кількість товару " + newCount);
+                        showQuantityOfProduct();
                     }
                     parameters[3] = String.valueOf(newCount);
                     line = String.join(",", parameters);
@@ -217,20 +231,20 @@ public class SupplyOfProducts extends JFrame {
 
             Files.write(Paths.get(selectedGroup), sb.toString().getBytes());
             JOptionPane.showMessageDialog(this, "Товар успішно додано.\n Актуальна кількість товару " + newCount);
-
+            showQuantityOfProduct();
 
             // Оновлення файлу AllProducts.txt
             updateAllProducts(productName, newCount);
 
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при додаванні товарів.");
+            JOptionPane.showMessageDialog(this, "Помилка при додаванні товарів.", "Помилка", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void updateAllProducts(String productName, int newQuantity) {
         try {
-            File file = new File("AllProducts.txt");
+            File file = new File(allProducts);
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -251,16 +265,22 @@ public class SupplyOfProducts extends JFrame {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при оновленні файлу AllProducts.txt.");
+            JOptionPane.showMessageDialog(this, "Помилка при оновленні файлу AllProducts.txt.", "Помилка", JOptionPane.ERROR_MESSAGE);
         }
     }
 
 
 
     private void saveButtonActionPerformed() {
-        String selectedGroup = (String) (chooseGroup.getSelectedItem() + ".txt");
+        String selectedGroup = chooseGroup.getSelectedItem() + ".txt";
         String selectedProduct = (String) chooseProduct.getSelectedItem();
-        int quantity = Integer.parseInt(supplyCount.getText());
+        int quantity = 0;
+        try {
+            quantity = Integer.parseInt(supplyCount.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Введіть кількість товару правильно.", "Помилка", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         if (chooseFunction.getSelectedIndex() == 0) {
             subtractItems(selectedGroup, selectedProduct, quantity);

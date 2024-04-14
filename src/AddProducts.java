@@ -77,6 +77,7 @@ public class AddProducts extends JFrame {
         this.setSize(width, height);
         this.getContentPane().setLayout(null);
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
+        this.setLocationRelativeTo(null);
         init();
     }
 
@@ -97,17 +98,6 @@ public class AddProducts extends JFrame {
             if (chooseFunction.getSelectedIndex() == 0) {
 
                 groupNameBox.setVisible(false);
-
-                descriptionOfGroup.setVisible(true);
-
-                typeDescription.setVisible(true);
-                typeDescription.setBounds(width/2 - widthOfField/2, height/2  , widthOfField, heightOfField);
-
-                nameOfGroup.setVisible(true);
-
-                typeName.setText("Назва групи товарів:");
-                typeName.setBounds(width/2 - widthOfField/2, height/2 - heightOfField*2 , widthOfField, heightOfField);
-
                 nameOfProduct.setVisible(false);
                 descriptionOfproduct.setVisible(false);
                 producerOfProduct.setVisible(false);
@@ -118,16 +108,15 @@ public class AddProducts extends JFrame {
                 typeCount.setVisible(false);
                 typePrice.setVisible(false);
 
+                typeDescription.setBounds(width/2 - widthOfField/2, height/2  , widthOfField, heightOfField);
+                typeName.setText("Назва групи товарів:");
+                typeName.setBounds(width/2 - widthOfField/2, height/2 - heightOfField*2 , widthOfField, heightOfField);
+
+                descriptionOfGroup.setVisible(true);
+                typeDescription.setVisible(true);
+                nameOfGroup.setVisible(true);
 
             } else {
-                groupNameBox.setVisible(true);
-
-                nameOfProduct.setVisible(true);
-                descriptionOfproduct.setVisible(true);
-                producerOfProduct.setVisible(true);
-                countOfProduct.setVisible(true);
-                priceOfProduct.setVisible(true);
-
                 nameOfGroup.setVisible(false);
                 descriptionOfGroup.setVisible(false);
 
@@ -138,10 +127,16 @@ public class AddProducts extends JFrame {
                 typeDescription.setText("Опис товару:");
                 typeDescription.setBounds(width/2 + widthOfField/2, height/2 - heightOfField*2 , widthOfField, heightOfField);
 
+                groupNameBox.setVisible(true);
+                nameOfProduct.setVisible(true);
+                descriptionOfproduct.setVisible(true);
+                producerOfProduct.setVisible(true);
+                countOfProduct.setVisible(true);
+                priceOfProduct.setVisible(true);
+
                 typeProducer.setVisible(true);
                 typeCount.setVisible(true);
                 typePrice.setVisible(true);
-
             }
         });
 
@@ -249,26 +244,36 @@ public class AddProducts extends JFrame {
             String groupName = nameOfGroup.getText();
             String groupDescription = descriptionOfGroup.getText();
 
-            if (!groupName.isEmpty() && !groupDescription.isEmpty()) {
+            if (!groupName.trim().isEmpty() && !groupDescription.trim().isEmpty()) {
                 addGroup(groupName, groupDescription);
                 nameOfGroup.setText("");
                 descriptionOfGroup.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Групу НЕ додано. Заповніть правильно всі поля!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }else{
             String groupName = groupNameBox.getSelectedItem().toString();
             String name = nameOfProduct.getText();
             String description = descriptionOfproduct.getText();
             String producer = producerOfProduct.getText();
-            int count = parseInt(countOfProduct.getText());
-            int price = parseInt(priceOfProduct.getText());
+            int count = 0;
+            int price = 0;
+            try {
+                count = parseInt(countOfProduct.getText());
+                price = parseInt(priceOfProduct.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Кількість та ціна повинні бути числами!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
-            if (!name.isEmpty() && !description.isEmpty() && !producer.isEmpty() && count > 0 && price > 0) {
+            if (!name.trim().isEmpty() && !description.trim().isEmpty() && !producer.trim().isEmpty() && count >= 0 && price > 0) {
                 addProductToGroup(groupName, name, description, producer, count, price);
                 nameOfProduct.setText("");
                 descriptionOfproduct.setText("");
                 producerOfProduct.setText("");
                 countOfProduct.setText("");
                 priceOfProduct.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Товар НЕ додано. Заповніть правильно всі поля!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -335,7 +340,7 @@ public class AddProducts extends JFrame {
             reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при завантаженні груп товарів.");
+            JOptionPane.showMessageDialog(this, "Помилка при завантаженні груп товарів.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
