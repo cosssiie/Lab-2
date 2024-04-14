@@ -307,7 +307,7 @@ public class AddProducts extends JFrame {
 
                 // Збереження товару в файлі "AllProducts.txt"
                 FileWriter allProductsWriter = new FileWriter(allProducts, true);
-                allProductsWriter.write(groupName + "," + name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
+                allProductsWriter.write(name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
                 allProductsWriter.close();
 
                 JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");

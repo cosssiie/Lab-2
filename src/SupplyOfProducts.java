@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -159,18 +160,17 @@ public class SupplyOfProducts extends JFrame {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             StringBuilder sb = new StringBuilder();
             String line;
+            int newCount = 0;
             while ((line = reader.readLine()) != null) {
                 String[] parameters = line.split(",");
                 if (parameters.length > 0 && parameters[0].equals(productName)) {
                     int currentCount = Integer.parseInt(parameters[3]);
-                    int newCount = currentCount - quantityToSubtract;
+                    newCount = currentCount - quantityToSubtract;
                     if (newCount < 0) {
                         JOptionPane.showMessageDialog(this, "Недостатньо товару для списання.");
                         return;
-                    }
-                    else{
+                    } else {
                         JOptionPane.showMessageDialog(this, "Товар успішно списано.\n Актуальна кількість товару " + newCount);
-
                     }
                     parameters[3] = String.valueOf(newCount);
                     line = String.join(",", parameters);
@@ -179,13 +179,20 @@ public class SupplyOfProducts extends JFrame {
             }
             reader.close();
 
-
             Files.write(Paths.get(selectedGroup), sb.toString().getBytes());
+
+            // Оновлення файлу AllProducts.txt
+            updateAllProducts(productName, newCount);
+
         } catch (IOException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Помилка при списанні товарів.");
         }
     }
+
+
+
+
     private void addItems(String selectedGroup, String productName, int quantityToAdd) {
         try {
             File file = new File(selectedGroup);
@@ -211,9 +218,40 @@ public class SupplyOfProducts extends JFrame {
             Files.write(Paths.get(selectedGroup), sb.toString().getBytes());
             JOptionPane.showMessageDialog(this, "Товар успішно додано.\n Актуальна кількість товару " + newCount);
 
+
+            // Оновлення файлу AllProducts.txt
+            updateAllProducts(productName, newCount);
+
         } catch (IOException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Помилка при додаванні товарів.");
+        }
+    }
+
+    private void updateAllProducts(String productName, int newQuantity) {
+        try {
+            File file = new File("AllProducts.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parameters = line.split(",");
+                if (parameters.length > 0 && parameters[0].equals(productName)) {
+                    parameters[3] = String.valueOf(newQuantity);
+                    line = String.join(",", parameters);
+                }
+                sb.append(line).append("\n");
+            }
+            reader.close();
+
+            Files.write(Paths.get("AllProducts.txt"), sb.toString().getBytes());
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при оновленні файлу AllProducts.txt.");
         }
     }
 
