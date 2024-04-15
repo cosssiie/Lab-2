@@ -78,4 +78,12 @@ public class Main {
             System.exit(1);
         }
     }
+    public GroupOfItems getGroupByName(String name){
+        for (GroupOfItems group : groupsList){
+            if (group.getNameOfGroup().equals(name)){
+                return group;
+            }
+        }
+        return null;
+    }
 }

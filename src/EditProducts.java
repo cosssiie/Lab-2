@@ -37,6 +37,9 @@ public class EditProducts extends JDialog {
     /**Вибір групи товарів, куди додати товар */
     public JComboBox<String> groupNameBox;
 
+    /**Вибір товару при видаленні */
+    public JComboBox<String> productNameBox;
+
     /**Кнопка "зберегти" */
     public JButton saveButton;
 
@@ -55,6 +58,7 @@ public class EditProducts extends JDialog {
     /**Напис ціни */
     private JLabel typePrice;
 
+    private volatile boolean isUpdating = false;
 
     private static final int WIDTH_OF_FRAME = 800;
     private static final int HEIGHT_OF_FRAME = 700;
@@ -190,6 +194,17 @@ public class EditProducts extends JDialog {
         groupNameBox.setFont(font.deriveFont(Font.BOLD, 16f));
         groupNameBox.setVisible(false);
         this.getContentPane().add(groupNameBox);
+        groupNameBox.addActionListener(e -> {
+            updateInformation();
+            updateProductNameBox();
+        });
+
+        productNameBox = new JComboBox<>();
+        productNameBox.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, 140 + HEIGHT_OF_FIELD, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+        productNameBox.setRenderer(renderer);
+        productNameBox.setFont(font.deriveFont(Font.BOLD, 16f));
+        productNameBox.setVisible(false);
+        this.getContentPane().add(productNameBox);
 
         saveButton = new JButton("Зберегти");
         saveButton.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_BUTTON /2, HEIGHT_OF_FRAME - 150, WIDTH_OF_BUTTON, HEIGHT_OF_BUTTON);
@@ -204,10 +219,21 @@ public class EditProducts extends JDialog {
         });
     }
 
+    private void updateProductNameBox() {
+        productNameBox.removeAllItems();
+        GroupOfItems selectedGroup;
+        if (groupNameBox.getSelectedItem().toString() != null) {
+            selectedGroup = main.getGroupByName(groupNameBox.getSelectedItem().toString());
+            for (Items product : selectedGroup.productsList) {
+                productNameBox.addItem(product.getName());
+            }
+        }
+    }
+
     private void functionActionPerformed() {
         if (chooseFunction.getSelectedIndex() != 2) {
             if (chooseSubject.getSelectedIndex() == 0) {
-
+                productNameBox.setVisible(false);
                 groupNameBox.setVisible(false);
                 nameOfProduct.setVisible(false);
                 descriptionOfProduct.setVisible(false);
@@ -226,8 +252,9 @@ public class EditProducts extends JDialog {
                 descriptionOfGroup.setVisible(true);
                 typeDescription.setVisible(true);
                 nameOfGroup.setVisible(true);
-
+                typeName.setVisible(true);
             } else {
+                productNameBox.setVisible(false);
                 nameOfGroup.setVisible(false);
                 descriptionOfGroup.setVisible(false);
 
@@ -248,30 +275,28 @@ public class EditProducts extends JDialog {
                 typeProducer.setVisible(true);
                 typeCount.setVisible(true);
                 typePrice.setVisible(true);
+                typeName.setVisible(true);
             }
         } else {
             if (chooseSubject.getSelectedIndex() == 0) {
 
-                groupNameBox.setVisible(false);
+                productNameBox.setVisible(false);
                 nameOfProduct.setVisible(false);
                 descriptionOfProduct.setVisible(false);
                 producerOfProduct.setVisible(false);
                 countOfProduct.setVisible(false);
                 priceOfProduct.setVisible(false);
                 descriptionOfGroup.setVisible(false);
+                nameOfGroup.setVisible(false);
 
                 typeProducer.setVisible(false);
                 typeCount.setVisible(false);
                 typePrice.setVisible(false);
                 typeDescription.setVisible(false);
+                typeName.setVisible(false);
 
-                typeName.setText("Назва групи товарів:");
-                typeName.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
-
-                nameOfGroup.setVisible(true);
-
+                groupNameBox.setVisible(true);
             } else {
-                groupNameBox.setVisible(false);
                 nameOfProduct.setVisible(false);
                 descriptionOfProduct.setVisible(false);
                 producerOfProduct.setVisible(false);
@@ -283,11 +308,10 @@ public class EditProducts extends JDialog {
                 typeCount.setVisible(false);
                 typePrice.setVisible(false);
                 typeDescription.setVisible(false);
+                typeName.setVisible(false);
 
-                typeName.setText("Назва товару:");
-                typeName.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
-
-                nameOfGroup.setVisible(true);
+                groupNameBox.setVisible(true);
+                productNameBox.setVisible(true);
             }
         }
     }
@@ -380,21 +404,16 @@ public class EditProducts extends JDialog {
 
 
     private void updateInformation() {
-        try {
-            File file = new File(main.groupsFileName);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                groupNameBox.addItem(line);
-            }
-            reader.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при завантаженні груп товарів.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (isUpdating) {
+            return;
         }
+        isUpdating = true;
+        System.out.println("Updating information");
+        groupNameBox.removeAllItems();
+        for (GroupOfItems group : main.groupsList) {
+            groupNameBox.addItem(group.getNameOfGroup());
+        }
+        isUpdating = false;
     }
 
     private boolean isGroupUnique(String groupName) {
