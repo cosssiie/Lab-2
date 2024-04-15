@@ -54,7 +54,7 @@ public class GroupOfItems {
         }
     }
 
-    private boolean productExists(String name){
+    public boolean productExists(String name){
         for (Items product : productsList){
             if (product.getName().equals(name)){
                 return true;

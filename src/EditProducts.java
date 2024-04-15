@@ -83,7 +83,6 @@ public class EditProducts extends JDialog {
     }
 
     private void init() {
-
         chooseSubject = new JComboBox<>();
         chooseSubject.addItem("групу товарів");
         chooseSubject.addItem("товар");
@@ -195,7 +194,6 @@ public class EditProducts extends JDialog {
         groupNameBox.setVisible(false);
         this.getContentPane().add(groupNameBox);
         groupNameBox.addActionListener(e -> {
-            updateInformation();
             updateProductNameBox();
         });
 
@@ -222,7 +220,7 @@ public class EditProducts extends JDialog {
     private void updateProductNameBox() {
         productNameBox.removeAllItems();
         GroupOfItems selectedGroup;
-        if (groupNameBox.getSelectedItem().toString() != null) {
+        if (groupNameBox.getSelectedItem() != null) {
             selectedGroup = main.getGroupByName(groupNameBox.getSelectedItem().toString());
             for (Items product : selectedGroup.productsList) {
                 productNameBox.addItem(product.getName());
@@ -317,91 +315,104 @@ public class EditProducts extends JDialog {
     }
 
     private void saveButtonActionPerformed() {
-        if (chooseSubject.getSelectedIndex() == 0) {
-            String groupName = nameOfGroup.getText();
-            String groupDescription = descriptionOfGroup.getText();
-
-            if (!groupName.trim().isEmpty() && !groupDescription.trim().isEmpty()) {
-                addGroup(groupName, groupDescription);
-                nameOfGroup.setText("");
-                descriptionOfGroup.setText("");
+        if (chooseFunction.getSelectedIndex() == 0){
+            if(chooseSubject.getSelectedIndex() == 0){
+                addGroup();
             } else {
-                JOptionPane.showMessageDialog(this, "Групу НЕ додано. Заповніть правильно всі поля!", "Error", JOptionPane.ERROR_MESSAGE);
+                addProduct();
             }
-        }else{
-            String groupName = groupNameBox.getSelectedItem().toString();
-            String name = nameOfProduct.getText();
-            String description = descriptionOfProduct.getText();
-            String producer = producerOfProduct.getText();
-            int count = 0;
-            int price = 0;
-            try {
-                count = parseInt(countOfProduct.getText());
-                price = parseInt(priceOfProduct.getText());
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Кількість та ціна повинні бути числами!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-            if (!name.trim().isEmpty() && !description.trim().isEmpty() && !producer.trim().isEmpty() && count >= 0 && price > 0) {
-                addProductToGroup(groupName, name, description, producer, count, price);
-                nameOfProduct.setText("");
-                descriptionOfProduct.setText("");
-                producerOfProduct.setText("");
-                countOfProduct.setText("");
-                priceOfProduct.setText("");
+        } else if (chooseFunction.getSelectedIndex() == 1){
+            if(chooseSubject.getSelectedIndex() == 0){
+                //editGroup();
             } else {
-                JOptionPane.showMessageDialog(this, "Товар НЕ додано. Заповніть правильно всі поля!", "Error", JOptionPane.ERROR_MESSAGE);
+                //editProduct();
             }
+        } else {
+            if(chooseSubject.getSelectedIndex() == 0){
+                //deleteGroup();
+            } else {
+                //deleteProduct();
+            }
+        }
+        nameOfGroup.setText("");
+        descriptionOfGroup.setText("");
+        nameOfProduct.setText("");
+        descriptionOfProduct.setText("");
+        producerOfProduct.setText("");
+        countOfProduct.setText("");
+        priceOfProduct.setText("");
+    }
+
+    private void addProduct() {
+        String groupName;
+        if(groupNameBox.getSelectedItem() != null){
+            groupName = groupNameBox.getSelectedItem().toString();
+        } else {
+            JOptionPane.showMessageDialog(this, "Групу товарів не обрано!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        groupName = groupName.replaceAll(";", "");
+        String name = nameOfProduct.getText();
+        name = name.replaceAll(";", "");
+        String description = descriptionOfProduct.getText();
+        description = description.replaceAll(";", "");
+        String producer = producerOfProduct.getText();
+        producer = producer.replaceAll(";", "");
+        int count = 0;
+        int price = 0;
+        try {
+            count = parseInt(countOfProduct.getText());
+            price = parseInt(priceOfProduct.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Кількість та ціна повинні бути числами!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!name.trim().isEmpty() && !description.trim().isEmpty() && !producer.trim().isEmpty() && count >= 0 && price > 0) {
+            addProductToGroup(groupName, name, description, producer, count, price);
+        } else {
+            JOptionPane.showMessageDialog(this, "Товар НЕ додано. Заповніть правильно всі поля!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
     }
 
-    private void addGroup(String groupName, String description) {
-        if (isGroupUnique(groupName)) {
-            GroupOfItems group = new GroupOfItems(groupName, description);
-            //Main.groupsList.add(group);
-
-            try {
-                FileWriter writer = new FileWriter(main.groupsFileName, true);
-                writer.write(groupName + "\n");
-                writer.close();
-                JOptionPane.showMessageDialog(this, "Група товарів \"" + groupName + "\" успішно додана!");
-
-                groupNameBox.addItem(groupName);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Помилка при додаванні групи товарів.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Група товарів з такою назвою вже існує!");
+    private void addGroup() {
+        String groupName = nameOfGroup.getText();
+        groupName = groupName.replaceAll(";", "");
+        String groupDescription = descriptionOfGroup.getText();
+        groupName = groupName.replaceAll(";", "");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(main.groupsFileName, true))) {
+            main.addGroup(new GroupOfItems(groupName, groupDescription));
+            writer.write(groupName + ";" + groupDescription + "\n");
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при додаванні групи товарів у файл.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+        updateInformation();
+        JOptionPane.showMessageDialog(this, "Групу товарів \"" + groupName + "\" успішно додано!");
     }
 
     private void addProductToGroup(String groupName, String name, String description, String producer, int count, int pricePerOne) {
-        if (isProductUnique(groupName, name)) {
-            Items item = new Items(name, description, producer, count, pricePerOne);
-            //productsList.add(item);
-            try {
-                // Зберігання товару в файлі групи
-                File groupFile = new File(groupName + ".txt");
-                FileWriter writer = new FileWriter(groupFile, true);
-                writer.write(name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
-                writer.close();
-
-                // Збереження товару в файлі "AllProducts.txt"
-                FileWriter allProductsWriter = new FileWriter(main.allProductsFileName, true);
-                allProductsWriter.write(name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
-                allProductsWriter.close();
-
-                JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Помилка при додаванні товару.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Товар з такою назвою вже існує в обраній групі!");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(main.allProductsFileName, true))){
+            main.getGroupByName(groupName).addProduct(new Items(name, description, producer, count, pricePerOne));
+            writer.write(groupName + ";" + name + ";" + description + ";" + producer + ";" + count + ";" + pricePerOne + "\n");
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при додаванні товару у файл.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+        updateInformation();
+        JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");
     }
-
 
     private void updateInformation() {
         if (isUpdating) {
@@ -414,47 +425,5 @@ public class EditProducts extends JDialog {
             groupNameBox.addItem(group.getNameOfGroup());
         }
         isUpdating = false;
-    }
-
-    private boolean isGroupUnique(String groupName) {
-        try {
-            File groupFile = new File(main.groupsFileName);
-            if (groupFile.exists()) {
-                BufferedReader reader = new BufferedReader(new FileReader(groupFile));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parameters = line.split(",");
-                    if (parameters.length > 0 && parameters[0].equals(groupName)) {
-                        reader.close();
-                        return false;
-                    }
-                }
-                reader.close();
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return true;
-    }
-
-    private boolean isProductUnique(String groupName, String productName) {
-        try {
-            File groupFile = new File(groupName + ".txt");
-            if (groupFile.exists()) {
-                BufferedReader reader = new BufferedReader(new FileReader(groupFile));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parameters = line.split(",");
-                    if (parameters.length > 0 && parameters[0].equals(productName)) {
-                        reader.close();
-                        return false;
-                    }
-                }
-                reader.close();
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return true;
     }
 }

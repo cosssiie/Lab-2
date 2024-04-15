@@ -7,10 +7,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class ProductSearch extends JFrame {
-
-    /** Шлях до теки з файлами груп товарів */
-    private static final String GROUPS_DIRECTORY = "GroupsOfProducts.txt";
+public class ProductSearch extends JDialog {
+    private Main main;
 
     /** Ввести назву товару */
     private JTextField nameOfProduct;
@@ -31,16 +29,18 @@ public class ProductSearch extends JFrame {
     private static final int widthOfButton = 170;
     private static final int heightOfButton = 70;
 
-    public static final String allProducts = "AllProducts.txt"; //файл для збереження груп товарів
-
-    public ProductSearch(String name) {
-        super();
+    public ProductSearch(String name, Main main, JFrame parent) {
+        super(parent, name, true);
+        this.main = main;
         this.setTitle(name);
         this.setSize(width, height);
         this.getContentPane().setLayout(null);
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
         this.setLocationRelativeTo(null);
+    }
+    public void start(){
         init();
+        this.setVisible(true);
     }
 
     private void init() {
@@ -78,7 +78,7 @@ public class ProductSearch extends JFrame {
     private void searchProduct() {
         String productName = nameOfProduct.getText();
         if (!productName.trim().isEmpty()) {
-            File groupFile = new File(allProducts);
+            File groupFile = new File(main.allProductsFileName);
             if (groupFile.exists()) {
                 String productInfo = readProductInfoFromFile(groupFile, productName);
                 information.setText(productInfo);
@@ -114,12 +114,5 @@ public class ProductSearch extends JFrame {
             information.setText("Помилка при зчитуванні файлу.");
         }
         return productInfo.toString();
-    }
-
-
-    public static void main(String[] args) {
-        // Приклад створення і відображення вікна пошуку товару
-        ProductSearch search = new ProductSearch("Пошук товару");
-        search.setVisible(true);
     }
 }

@@ -5,11 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
-public class SupplyOfProducts extends JFrame {
+public class SupplyOfProducts extends JDialog {
+    private final Main main;
 
     /** Вибір функції: списати товар/поставка товарів */
     private JComboBox<String> chooseFunction;
@@ -36,18 +35,22 @@ public class SupplyOfProducts extends JFrame {
     private static final int widthOfButton = 170;
     private static final int heightOfButton = 70;
 
-    public SupplyOfProducts(String name, ArrayList<GroupOfItems> groupsList) {
-        super();
+    public SupplyOfProducts(String name, Main main, JFrame parent) {
+        super(parent, name, true);
+        this.main = main;
         this.setTitle(name);
         this.setSize(width, height);
         this.getContentPane().setLayout(null);
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
         this.setLocationRelativeTo(null);
-        init(groupsList);
+    }
+    public void start(){
+        init();
         loadGroupNamesFromFile();
+        this.setVisible(true);
     }
 
-    private void init(ArrayList<GroupOfItems> groupsList) {
+    private void init() {
         chooseFunction = new JComboBox<>();
         chooseFunction.addItem("Списати товар");
         chooseFunction.addItem("Доставити товар");
@@ -289,11 +292,5 @@ public class SupplyOfProducts extends JFrame {
             addItems(selectedGroup, selectedProduct, quantity);
             supplyCount.setText("");
         }
-    }
-
-
-    public static void main(String[] args) {
-        //SupplyOfProducts supply = new SupplyOfProducts("Поставка та списання товарів", AddProducts.groupsList);
-        //supply.setVisible(true);
     }
 }

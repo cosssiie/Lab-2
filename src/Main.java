@@ -36,16 +36,16 @@ public class Main {
 
     private void start() {
         loadInformationFromFiles();
-//        for (GroupOfItems group : groupsList){
-//            System.out.println(group);
-//            for (Items product : group.productsList){
-//                System.out.println(product);
-//            }
-//        }
+        for (GroupOfItems group : groupsList){
+            System.out.println(group.getNameOfGroup()+"-----------");
+            for (Items product : group.productsList){
+                System.out.println(product.getName());
+            }
+        }
         mainInterface = new Interface("Stock", this);
-        productSearch = new ProductSearch("Пошук товару");
         editProducts = new EditProducts("Додавання товару", this, mainInterface);
-        //supplyOfProducts = new SupplyOfProducts("Поставка товару");
+        productSearch = new ProductSearch("Пошук товару", this, mainInterface);
+        supplyOfProducts = new SupplyOfProducts("Поставка товару", this, mainInterface);
         //statistics = new Statistics("Статистика");
         mainInterface.start();
     }
@@ -85,5 +85,19 @@ public class Main {
             }
         }
         return null;
+    }
+    public boolean groupExists(String name){
+        for (GroupOfItems group : groupsList){
+            if (group.getNameOfGroup().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void addGroup(GroupOfItems group) throws IllegalArgumentException{
+        if (groupExists(group.getNameOfGroup())){
+            throw new IllegalArgumentException("Група з такою назвою вже існує.");
+        }
+        groupsList.add(group);
     }
 }
