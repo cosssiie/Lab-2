@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class GroupOfItems {
     /**Масив для зберігання товарів */
-    public static ArrayList<Items> productsList = new ArrayList<>();
+    public ArrayList<Items> productsList = new ArrayList<>();
     /**Назва групи товарів */
     private String nameOfGroup;
 
@@ -35,5 +35,32 @@ public class GroupOfItems {
         "\nОпис групи товарів: " + groupDescription;
     }
 
+    public void addProduct(Items product) throws IllegalArgumentException{
+         if (productExists(product.getName())){
+             throw new IllegalArgumentException("Товар з такою назвою вже існує.");
+         }
+         productsList.add(product);
+    }
+
+    public void removeProduct(String name) throws IllegalArgumentException{
+        if (!productExists(name)){
+            throw new IllegalArgumentException("Товар з такою назвою не існує.");
+        }
+        for (Items product : productsList){
+            if (product.getName().equals(name)){
+                productsList.remove(product);
+                break;
+            }
+        }
+    }
+
+    private boolean productExists(String name){
+        for (Items product : productsList){
+            if (product.getName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 

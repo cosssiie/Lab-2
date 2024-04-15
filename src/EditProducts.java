@@ -74,6 +74,7 @@ public class EditProducts extends JDialog {
     }
     public void start(){
         init();
+        updateInformation();
         this.setVisible(true);
     }
 
@@ -189,9 +190,6 @@ public class EditProducts extends JDialog {
         groupNameBox.setFont(font.deriveFont(Font.BOLD, 16f));
         groupNameBox.setVisible(false);
         this.getContentPane().add(groupNameBox);
-
-
-        loadGroupNamesFromFile();
 
         saveButton = new JButton("Зберегти");
         saveButton.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_BUTTON /2, HEIGHT_OF_FRAME - 150, WIDTH_OF_BUTTON, HEIGHT_OF_BUTTON);
@@ -366,7 +364,7 @@ public class EditProducts extends JDialog {
                 writer.close();
 
                 // Збереження товару в файлі "AllProducts.txt"
-                FileWriter allProductsWriter = new FileWriter(main.allProducts, true);
+                FileWriter allProductsWriter = new FileWriter(main.allProductsFileName, true);
                 allProductsWriter.write(name + "," + description + "," + producer + "," + count + "," + pricePerOne + "\n");
                 allProductsWriter.close();
 
@@ -381,7 +379,7 @@ public class EditProducts extends JDialog {
     }
 
 
-    private void loadGroupNamesFromFile() {
+    private void updateInformation() {
         try {
             File file = new File(main.groupsFileName);
             if (!file.exists()) {
