@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Interface extends JFrame{
-    private Main main;
+    private final Main main;
 
     private JComboBox<String> choose;
     private JButton okButton;

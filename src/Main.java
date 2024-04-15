@@ -33,7 +33,7 @@ public class Main {
     private void start() {
         mainInterface = new Interface("Stock", this);
         productSearch = new ProductSearch("Пошук товару");
-        editProducts = new EditProducts("Додавання товару", this);
+        editProducts = new EditProducts("Додавання товару", this, mainInterface);
         //supplyOfProducts = new SupplyOfProducts("Поставка товару");
         //statistics = new Statistics("Статистика");
         mainInterface.start();

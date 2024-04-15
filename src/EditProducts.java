@@ -4,10 +4,13 @@ import java.io.*;
 
 import static java.lang.Integer.parseInt;
 
-public class EditProducts extends JFrame {
-    private Main main;
+public class EditProducts extends JDialog {
+    private final Main main;
 
-    /**Вибір функції: додати групу товарів/додати товар */
+    /**Вибір функції:  група товарів/товар */
+    private JComboBox<String> chooseSubject;
+
+    /**Вибір функції */
     private JComboBox<String> chooseFunction;
 
     /**Ввести назву товару/ групи товарів */
@@ -20,7 +23,7 @@ public class EditProducts extends JFrame {
     private JTextField nameOfProduct;
 
     /**Ввести опис товару */
-    private JTextField descriptionOfproduct;
+    private JTextField descriptionOfProduct;
 
     /**Ввести виробника товару */
     private JTextField producerOfProduct;
@@ -60,7 +63,8 @@ public class EditProducts extends JFrame {
     private static final int WIDTH_OF_BUTTON = 170;
     private static final int HEIGHT_OF_BUTTON = 70;
 
-    public EditProducts(String name, Main main) {
+    public EditProducts(String name, Main main, JFrame parent) {
+        super(parent, name, true);
         this.main = main;
         this.setTitle(name);
         this.setSize(WIDTH_OF_FRAME, HEIGHT_OF_FRAME);
@@ -75,61 +79,32 @@ public class EditProducts extends JFrame {
 
     private void init() {
 
-        chooseFunction = new JComboBox<>();
-        chooseFunction.addItem("Додати групу товарів");
-        chooseFunction.addItem("Додати товар");
+        chooseSubject = new JComboBox<>();
+        chooseSubject.addItem("групу товарів");
+        chooseSubject.addItem("товар");
         DefaultListCellRenderer renderer = new DefaultListCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
+        chooseSubject.setRenderer(renderer);
+        Font font = chooseSubject.getFont();
+        chooseSubject.setFont(font.deriveFont(Font.BOLD, 16f));
+        chooseSubject.setBounds(WIDTH_OF_FRAME /2 + 10, HEIGHT_OF_FRAME /2 - 300 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+        this.getContentPane().add(chooseSubject);
+
+        chooseSubject.addActionListener(e -> {
+            functionActionPerformed();
+        });
+
+        chooseFunction = new JComboBox<>();
+        chooseFunction.addItem("Додати");
+        chooseFunction.addItem("Редагувати");
+        chooseFunction.addItem("Видалити");
         chooseFunction.setRenderer(renderer);
-        Font font = chooseFunction.getFont();
         chooseFunction.setFont(font.deriveFont(Font.BOLD, 16f));
-        chooseFunction.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - 300 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
-        this.getContentPane().add(chooseFunction);
+        chooseFunction.setBounds(WIDTH_OF_FRAME /2 - 10 - WIDTH_OF_FIELD, HEIGHT_OF_FRAME /2 - 300 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+        add(chooseFunction);
 
         chooseFunction.addActionListener(e -> {
-            if (chooseFunction.getSelectedIndex() == 0) {
-
-                groupNameBox.setVisible(false);
-                nameOfProduct.setVisible(false);
-                descriptionOfproduct.setVisible(false);
-                producerOfProduct.setVisible(false);
-                countOfProduct.setVisible(false);
-                priceOfProduct.setVisible(false);
-
-                typeProducer.setVisible(false);
-                typeCount.setVisible(false);
-                typePrice.setVisible(false);
-
-                typeDescription.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2  , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
-                typeName.setText("Назва групи товарів:");
-                typeName.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
-
-                descriptionOfGroup.setVisible(true);
-                typeDescription.setVisible(true);
-                nameOfGroup.setVisible(true);
-
-            } else {
-                nameOfGroup.setVisible(false);
-                descriptionOfGroup.setVisible(false);
-
-                typeName.setText("Назва товару:");
-                typeName.setBounds(WIDTH_OF_FRAME /2 - 270, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
-
-                typeDescription.setVisible(true);
-                typeDescription.setText("Опис товару:");
-                typeDescription.setBounds(WIDTH_OF_FRAME /2 + WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
-
-                groupNameBox.setVisible(true);
-                nameOfProduct.setVisible(true);
-                descriptionOfproduct.setVisible(true);
-                producerOfProduct.setVisible(true);
-                countOfProduct.setVisible(true);
-                priceOfProduct.setVisible(true);
-
-                typeProducer.setVisible(true);
-                typeCount.setVisible(true);
-                typePrice.setVisible(true);
-            }
+            functionActionPerformed();
         });
 
         typeName = new JLabel("Назва групи товарів: ");
@@ -180,12 +155,12 @@ public class EditProducts extends JFrame {
         this.getContentPane().add(nameOfProduct);
         nameOfProduct.setVisible(false);
 
-        descriptionOfproduct = new JTextField();
-        descriptionOfproduct.setHorizontalAlignment(JTextField.CENTER);
-        descriptionOfproduct.setBounds(WIDTH_OF_FRAME /2 + 50, HEIGHT_OF_FRAME /2 - 90, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
-        descriptionOfproduct.setFont(font.deriveFont(Font.BOLD, 16f));
-        this.getContentPane().add(descriptionOfproduct);
-        descriptionOfproduct.setVisible(false);
+        descriptionOfProduct = new JTextField();
+        descriptionOfProduct.setHorizontalAlignment(JTextField.CENTER);
+        descriptionOfProduct.setBounds(WIDTH_OF_FRAME /2 + 50, HEIGHT_OF_FRAME /2 - 90, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+        descriptionOfProduct.setFont(font.deriveFont(Font.BOLD, 16f));
+        this.getContentPane().add(descriptionOfProduct);
+        descriptionOfProduct.setVisible(false);
 
         producerOfProduct = new JTextField();
         producerOfProduct.setHorizontalAlignment(JTextField.CENTER);
@@ -231,8 +206,96 @@ public class EditProducts extends JFrame {
         });
     }
 
+    private void functionActionPerformed() {
+        if (chooseFunction.getSelectedIndex() != 2) {
+            if (chooseSubject.getSelectedIndex() == 0) {
+
+                groupNameBox.setVisible(false);
+                nameOfProduct.setVisible(false);
+                descriptionOfProduct.setVisible(false);
+                producerOfProduct.setVisible(false);
+                countOfProduct.setVisible(false);
+                priceOfProduct.setVisible(false);
+
+                typeProducer.setVisible(false);
+                typeCount.setVisible(false);
+                typePrice.setVisible(false);
+
+                typeDescription.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2  , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+                typeName.setText("Назва групи товарів:");
+                typeName.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+
+                descriptionOfGroup.setVisible(true);
+                typeDescription.setVisible(true);
+                nameOfGroup.setVisible(true);
+
+            } else {
+                nameOfGroup.setVisible(false);
+                descriptionOfGroup.setVisible(false);
+
+                typeName.setText("Назва товару:");
+                typeName.setBounds(WIDTH_OF_FRAME /2 - 270, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+
+                typeDescription.setVisible(true);
+                typeDescription.setText("Опис товару:");
+                typeDescription.setBounds(WIDTH_OF_FRAME /2 + WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+
+                groupNameBox.setVisible(true);
+                nameOfProduct.setVisible(true);
+                descriptionOfProduct.setVisible(true);
+                producerOfProduct.setVisible(true);
+                countOfProduct.setVisible(true);
+                priceOfProduct.setVisible(true);
+
+                typeProducer.setVisible(true);
+                typeCount.setVisible(true);
+                typePrice.setVisible(true);
+            }
+        } else {
+            if (chooseSubject.getSelectedIndex() == 0) {
+
+                groupNameBox.setVisible(false);
+                nameOfProduct.setVisible(false);
+                descriptionOfProduct.setVisible(false);
+                producerOfProduct.setVisible(false);
+                countOfProduct.setVisible(false);
+                priceOfProduct.setVisible(false);
+                descriptionOfGroup.setVisible(false);
+
+                typeProducer.setVisible(false);
+                typeCount.setVisible(false);
+                typePrice.setVisible(false);
+                typeDescription.setVisible(false);
+
+                typeName.setText("Назва групи товарів:");
+                typeName.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+
+                nameOfGroup.setVisible(true);
+
+            } else {
+                groupNameBox.setVisible(false);
+                nameOfProduct.setVisible(false);
+                descriptionOfProduct.setVisible(false);
+                producerOfProduct.setVisible(false);
+                countOfProduct.setVisible(false);
+                priceOfProduct.setVisible(false);
+                descriptionOfGroup.setVisible(false);
+
+                typeProducer.setVisible(false);
+                typeCount.setVisible(false);
+                typePrice.setVisible(false);
+                typeDescription.setVisible(false);
+
+                typeName.setText("Назва товару:");
+                typeName.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+
+                nameOfGroup.setVisible(true);
+            }
+        }
+    }
+
     private void saveButtonActionPerformed() {
-        if (chooseFunction.getSelectedIndex() == 0) {
+        if (chooseSubject.getSelectedIndex() == 0) {
             String groupName = nameOfGroup.getText();
             String groupDescription = descriptionOfGroup.getText();
 
@@ -246,7 +309,7 @@ public class EditProducts extends JFrame {
         }else{
             String groupName = groupNameBox.getSelectedItem().toString();
             String name = nameOfProduct.getText();
-            String description = descriptionOfproduct.getText();
+            String description = descriptionOfProduct.getText();
             String producer = producerOfProduct.getText();
             int count = 0;
             int price = 0;
@@ -260,7 +323,7 @@ public class EditProducts extends JFrame {
             if (!name.trim().isEmpty() && !description.trim().isEmpty() && !producer.trim().isEmpty() && count >= 0 && price > 0) {
                 addProductToGroup(groupName, name, description, producer, count, price);
                 nameOfProduct.setText("");
-                descriptionOfproduct.setText("");
+                descriptionOfProduct.setText("");
                 producerOfProduct.setText("");
                 countOfProduct.setText("");
                 priceOfProduct.setText("");
