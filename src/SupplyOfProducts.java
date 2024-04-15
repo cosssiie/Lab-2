@@ -50,7 +50,7 @@ public class SupplyOfProducts extends JFrame {
     private void init(ArrayList<GroupOfItems> groupsList) {
         chooseFunction = new JComboBox<>();
         chooseFunction.addItem("Списати товар");
-        chooseFunction.addItem("Поставка товару");
+        chooseFunction.addItem("Доставити товар");
         DefaultListCellRenderer renderer = new DefaultListCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         chooseFunction.setRenderer(renderer);
@@ -293,7 +293,7 @@ public class SupplyOfProducts extends JFrame {
 
 
     public static void main(String[] args) {
-        SupplyOfProducts supply = new SupplyOfProducts("Поставка та списання товарів", AddProducts.groupsList);
-        supply.setVisible(true);
+        //SupplyOfProducts supply = new SupplyOfProducts("Поставка та списання товарів", AddProducts.groupsList);
+        //supply.setVisible(true);
     }
 }

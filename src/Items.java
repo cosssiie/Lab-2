@@ -1,19 +1,18 @@
 public class Items {
-
     /**Назва товару */
-    public static String name;
+    private String name;
 
     /**Опис товару */
-    public static String description;
+    private String description;
 
     /**Виробник товару */
-    public static String producer;
+    private String producer;
 
     /**Кількість товару на складі*/
-    public static int count;
+    private int count;
 
     /**Ціна за одиницю */
-    public static int pricePerOne;
+    private int pricePerOne;
 
     public Items(String name, String description, String producer, int count, int pricePerOne){
         this.name = name;
@@ -42,6 +41,26 @@ public class Items {
 
     public double getPricePerOne() {
         return pricePerOne;
+    }
+
+    public void setPricePerOne(int pricePerOne) {
+        this.pricePerOne = pricePerOne;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public void setProducer(String producer) {
+        this.producer = producer;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String toString(){

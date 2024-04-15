@@ -1,11 +1,13 @@
+import java.util.ArrayList;
+
 public class GroupOfItems {
+    /**Масив для зберігання товарів */
+    public static ArrayList<Items> productsList = new ArrayList<>();
+    /**Назва групи товарів */
+    private String nameOfGroup;
 
-
-     /**Назва групи товарів */
-     public String nameOfGroup;
-
-     /**Опис групи товарів */
-     public String groupDescription;
+    /**Опис групи товарів */
+    private String groupDescription;
 
      public GroupOfItems(String nameOfGroup, String descriptionOfGroup){
         this.nameOfGroup = nameOfGroup;
@@ -18,6 +20,14 @@ public class GroupOfItems {
 
     public String getGroupDescription() {
         return groupDescription;
+    }
+
+    public void setNameOfGroup(String nameOfGroup) {
+        this.nameOfGroup = nameOfGroup;
+    }
+
+    public void setGroupDescription(String groupDescription) {
+        this.groupDescription = groupDescription;
     }
 
     public String toString(){
