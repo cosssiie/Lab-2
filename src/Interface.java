@@ -69,7 +69,7 @@ public class Interface extends JFrame{
                 main.productSearch.start();
                 break;
             case 3:
-                //main.statistics.start();
+                main.statistics.start();
                 break;
         }
     }

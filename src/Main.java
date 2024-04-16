@@ -44,7 +44,7 @@ public class Main {
         editProducts = new EditProducts("Додавання товару", this, mainInterface);
         productSearch = new ProductSearch("Пошук товару", this, mainInterface);
         supplyOfProducts = new SupplyOfProducts("Поставка товару", this, mainInterface);
-        //statistics = new Statistics("Статистика");
+        statistics = new Statistics("Статистика", this, mainInterface);
         mainInterface.start();
     }
 
@@ -52,7 +52,7 @@ public class Main {
         try(BufferedReader reader = new BufferedReader(new FileReader(groupsFileName))){
             String line;
             while ((line = reader.readLine()) != null){
-                groupsList.add(new GroupOfItems(line.split(";")[0], line.split(";")[1]));
+                groupsList.add(new GroupOfItems(line.split(";")[0], line.split(";")[1], this));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,6 +76,11 @@ public class Main {
             System.exit(1);
         }
     }
+
+    public ArrayList<GroupOfItems> getGroupsList() {
+        return groupsList;
+    }
+
     public GroupOfItems getGroupByName(String name){
         for (GroupOfItems group : groupsList){
             if (group.getNameOfGroup().equals(name)){
@@ -88,6 +93,16 @@ public class Main {
         for (GroupOfItems group : groupsList){
             if (group.getNameOfGroup().equals(name)){
                 return true;
+            }
+        }
+        return false;
+    }
+    public boolean productExists(String name){
+        for (GroupOfItems group : groupsList){
+            for (Items product : group.productsList){
+                if (product.getName().equals(name)){
+                    return true;
+                }
             }
         }
         return false;
@@ -163,5 +178,14 @@ public class Main {
             JOptionPane.showMessageDialog(null, "Помилка при записі у файли.", "Помилка", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
+    }
+    public int getTotalStockValue(){
+        int totalValue = 0;
+        for (GroupOfItems group : groupsList){
+            for (Items product : group.productsList){
+                totalValue += product.getCount() * product.getPricePerOne();
+            }
+        }
+        return totalValue;
     }
 }

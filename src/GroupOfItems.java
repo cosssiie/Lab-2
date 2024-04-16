@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class GroupOfItems {
+    private Main main;
     /**Масив для зберігання товарів */
     public ArrayList<Items> productsList = new ArrayList<>();
     /**Назва групи товарів */
@@ -9,7 +10,8 @@ public class GroupOfItems {
     /**Опис групи товарів */
     private String groupDescription;
 
-     public GroupOfItems(String nameOfGroup, String descriptionOfGroup){
+     public GroupOfItems(String nameOfGroup, String descriptionOfGroup, Main main){
+        this.main = main;
         this.nameOfGroup = nameOfGroup;
         this.groupDescription = descriptionOfGroup;
     }
@@ -36,7 +38,7 @@ public class GroupOfItems {
     }
 
     public void addProduct(String name, String desc, String producer, int count, int pricePerOne) throws IllegalArgumentException{
-         if (productExists(name)){
+         if (main.productExists(name)){
              throw new IllegalArgumentException("Товар з такою назвою вже існує.");
          } else if (name.trim().isEmpty()){
              throw new IllegalArgumentException("Назва товару не може бути порожньою.");
@@ -53,9 +55,9 @@ public class GroupOfItems {
     }
 
     public void editProduct(String oldName, String newName, String newDescription, String newProducer, String newCount, String newPricePerOne) throws IllegalArgumentException{
-        if (!productExists(oldName)){
+        if (!main.productExists(oldName)){
             throw new IllegalArgumentException("Товар з такою назвою не існує.");
-        } else if (productExists(newName) && newDescription.trim().isEmpty() && newProducer.trim().isEmpty() && newCount.trim().isEmpty() && newPricePerOne.trim().isEmpty()){
+        } else if (main.productExists(newName) && newDescription.trim().isEmpty() && newProducer.trim().isEmpty() && newCount.trim().isEmpty() && newPricePerOne.trim().isEmpty()){
             throw new IllegalArgumentException("Товар має таку саму назву");
         } else if (newName.trim().isEmpty() && newDescription.trim().isEmpty() && newProducer.trim().isEmpty() && newCount.trim().isEmpty() && newPricePerOne.trim().isEmpty()){
             throw new IllegalArgumentException("Зміни не введено.");
@@ -110,7 +112,7 @@ public class GroupOfItems {
     }
 
     public void removeProduct(String name) throws IllegalArgumentException{
-        if (!productExists(name)){
+        if (!main.productExists(name)){
             throw new IllegalArgumentException("Товар з такою назвою не існує.");
         }
         for (Items product : productsList){
@@ -121,15 +123,6 @@ public class GroupOfItems {
         }
     }
 
-    public boolean productExists(String name){
-        for (Items product : productsList){
-            if (product.getName().equals(name)){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public Items getProductByName(String name){
         for (Items product : productsList){
             if (product.getName().equals(name)){
@@ -137,6 +130,13 @@ public class GroupOfItems {
             }
         }
         return null;
+    }
+    public int getTotalValue(){
+        int totalValue = 0;
+        for (Items product : productsList){
+            totalValue += product.getCount() * product.getPricePerOne();
+        }
+        return totalValue;
     }
 }
 

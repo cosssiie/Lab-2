@@ -204,7 +204,7 @@ public class EditProducts extends JDialog {
         productNameBox.setVisible(false);
         this.getContentPane().add(productNameBox);
 
-        saveButton = new JButton("Зберегти");
+        saveButton = new JButton("OK");
         saveButton.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_BUTTON /2, HEIGHT_OF_FRAME - 150, WIDTH_OF_BUTTON, HEIGHT_OF_BUTTON);
         saveButton.setBackground(new Color(102, 153, 102, 250));
         saveButton.setForeground(Color.WHITE);
@@ -506,7 +506,7 @@ public class EditProducts extends JDialog {
         String groupDescription = descriptionOfGroup.getText();
         groupName = groupName.replaceAll(";", "");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(main.groupsFileName, true))) {
-            main.addGroup(new GroupOfItems(groupName, groupDescription));
+            main.addGroup(new GroupOfItems(groupName, groupDescription, main));
             writer.write(groupName + ";" + groupDescription + "\n");
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
