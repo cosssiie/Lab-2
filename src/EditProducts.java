@@ -344,9 +344,9 @@ public class EditProducts extends JDialog {
             }
         } else {
             if(chooseSubject.getSelectedIndex() == 0){
-                //deleteGroup();
+                deleteGroup();
             } else {
-                //deleteProduct();
+                deleteProduct();
             }
         }
         nameOfGroup.setText("");
@@ -356,6 +356,53 @@ public class EditProducts extends JDialog {
         producerOfProduct.setText("");
         countOfProduct.setText("");
         priceOfProduct.setText("");
+    }
+
+    private void deleteProduct() {
+        String groupName;
+        if(groupNameBox.getSelectedItem() != null){
+            groupName = groupNameBox.getSelectedItem().toString();
+        } else {
+            JOptionPane.showMessageDialog(this, "Групу товарів не обрано!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String productName;
+        if(productNameBox.getSelectedItem() != null){
+            productName = productNameBox.getSelectedItem().toString();
+        } else {
+            JOptionPane.showMessageDialog(this, "Товар не обрано!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
+            main.getGroupByName(groupName).removeProduct(productName);
+            main.updateFiles();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        updateProductNameBox();
+        JOptionPane.showMessageDialog(this, "Товар \"" + productName + "\" успішно видалено з групи \"" + groupName + "\"!");
+    }
+
+    private void deleteGroup() {
+        String groupName;
+        if(groupNameBox.getSelectedItem() != null){
+            groupName = groupNameBox.getSelectedItem().toString();
+        } else {
+            JOptionPane.showMessageDialog(this, "Групу товарів не обрано!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
+            main.removeGroup(groupName);
+            main.updateFiles();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        updateInformation();
+        JOptionPane.showMessageDialog(this, "Групу товарів \"" + groupName + "\" успішно видалено!");
     }
 
     private void editProduct() {

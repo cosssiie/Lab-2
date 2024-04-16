@@ -127,6 +127,19 @@ public class Main {
             }
         }
     }
+
+    public void removeGroup(String name) throws IllegalArgumentException{
+        if (!groupExists(name)){
+            throw new IllegalArgumentException("Групи з такою назвою не існує.");
+        }
+        for (GroupOfItems group : groupsList){
+            if (group.getNameOfGroup().equals(name)){
+                groupsList.remove(group);
+                break;
+            }
+        }
+    }
+
     public void updateFiles(){
         try {
             BufferedWriter writer1 = new BufferedWriter(new FileWriter(groupsFileName));
