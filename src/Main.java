@@ -1,7 +1,5 @@
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -56,7 +54,7 @@ public class Main {
             while ((line = reader.readLine()) != null){
                 groupsList.add(new GroupOfItems(line.split(";")[0], line.split(";")[1]));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Помилка при зчитуванні файлу груп товарів.", "Помилка", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
@@ -67,7 +65,7 @@ public class Main {
                 String[] productData = line.split(";");
                 for (GroupOfItems group : groupsList){
                     if (group.getNameOfGroup().equals(productData[0])){
-                        group.addProduct(new Items(productData[1], productData[2],productData[3], Integer.parseInt(productData[4]), Integer.parseInt(productData[5])));
+                        group.addProduct(productData[1], productData[2],productData[3], Integer.parseInt(productData[4]), Integer.parseInt(productData[5]));
                         break;
                     }
                 }
@@ -97,7 +95,60 @@ public class Main {
     public void addGroup(GroupOfItems group) throws IllegalArgumentException{
         if (groupExists(group.getNameOfGroup())){
             throw new IllegalArgumentException("Група з такою назвою вже існує.");
+        } else if (group.getNameOfGroup().trim().isEmpty()){
+            throw new IllegalArgumentException("Назва групи не може бути порожньою.");
+        } else if (group.getGroupDescription().trim().isEmpty()){
+            throw new IllegalArgumentException("Опис групи не може бути порожнім.");
         }
         groupsList.add(group);
+    }
+
+    public void editGroup(String oldName, String newName, String newDescription) throws IllegalArgumentException{
+        if (!groupExists(oldName)){
+            throw new IllegalArgumentException("Групи з такою назвою не існує.");
+        } else if (groupExists(newName) && newDescription.trim().isEmpty()){
+            throw new IllegalArgumentException("Група має таку саму назву");
+        } else if (newName.trim().isEmpty() && newDescription.trim().isEmpty()){
+            throw new IllegalArgumentException("Нова назва або опис повинні бути заповнені.");
+        } else if (newName.equals(oldName) && newDescription.equals(getGroupByName(oldName).getGroupDescription())){
+            throw new IllegalArgumentException("Нова назва або опис повинні бути відмінні від старих.");
+        } else if (newName.trim().isEmpty() && getGroupByName(oldName).getGroupDescription().equals(newDescription)){
+            throw new IllegalArgumentException("Група має такий самий опис.");
+        }
+        for (GroupOfItems group : groupsList) {
+            if (group.getNameOfGroup().equals(oldName)) {
+                if (!newName.trim().isEmpty()) {
+                    group.setNameOfGroup(newName);
+                }
+                if (!newDescription.trim().isEmpty()) {
+                    group.setGroupDescription(newDescription);
+                }
+                break;
+            }
+        }
+    }
+    public void updateFiles(){
+        try {
+            BufferedWriter writer1 = new BufferedWriter(new FileWriter(groupsFileName));
+            for (GroupOfItems group : groupsList){
+                writer1.write(group.getNameOfGroup() + ";" + group.getGroupDescription());
+                writer1.newLine();
+            }
+            writer1.flush();
+            writer1.close();
+            BufferedWriter writer2 = new BufferedWriter(new FileWriter(allProductsFileName));
+            for (GroupOfItems group : groupsList){
+                for (Items product : group.productsList){
+                    writer2.write(group.getNameOfGroup() + ";" + product.getName() + ";" + product.getDescription() + ";" + product.getProducer() + ";" + product.getCount() + ";" + product.getPricePerOne());
+                    writer2.newLine();
+                }
+            }
+            writer2.flush();
+            writer2.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Помилка при записі у файли.", "Помилка", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
     }
 }

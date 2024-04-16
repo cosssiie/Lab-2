@@ -39,7 +39,7 @@ public class Items {
         return count;
     }
 
-    public double getPricePerOne() {
+    public int getPricePerOne() {
         return pricePerOne;
     }
 

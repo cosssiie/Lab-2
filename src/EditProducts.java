@@ -231,8 +231,14 @@ public class EditProducts extends JDialog {
     private void functionActionPerformed() {
         if (chooseFunction.getSelectedIndex() != 2) {
             if (chooseSubject.getSelectedIndex() == 0) {
+                productNameBox.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, 140 + HEIGHT_OF_FIELD, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+                groupNameBox.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, 130 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
                 productNameBox.setVisible(false);
-                groupNameBox.setVisible(false);
+                if (chooseFunction.getSelectedIndex() == 0){
+                    groupNameBox.setVisible(false);
+                } else {
+                    groupNameBox.setVisible(true);
+                }
                 nameOfProduct.setVisible(false);
                 descriptionOfProduct.setVisible(false);
                 producerOfProduct.setVisible(false);
@@ -252,10 +258,17 @@ public class EditProducts extends JDialog {
                 nameOfGroup.setVisible(true);
                 typeName.setVisible(true);
             } else {
-                productNameBox.setVisible(false);
                 nameOfGroup.setVisible(false);
                 descriptionOfGroup.setVisible(false);
-
+                if(chooseFunction.getSelectedIndex() == 1){
+                    groupNameBox.setBounds(WIDTH_OF_FRAME /2 - 10 - WIDTH_OF_FIELD, 130 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+                    productNameBox.setBounds(WIDTH_OF_FRAME /2 + 10, 130 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+                    productNameBox.setVisible(true);
+                } else {
+                    productNameBox.setVisible(false);
+                    productNameBox.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, 140 + HEIGHT_OF_FIELD, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+                    groupNameBox.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, 130 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+                }
                 typeName.setText("Назва товару:");
                 typeName.setBounds(WIDTH_OF_FRAME /2 - 270, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD *2 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
 
@@ -276,6 +289,8 @@ public class EditProducts extends JDialog {
                 typeName.setVisible(true);
             }
         } else {
+            productNameBox.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, 140 + HEIGHT_OF_FIELD, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+            groupNameBox.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, 130 , WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
             if (chooseSubject.getSelectedIndex() == 0) {
 
                 productNameBox.setVisible(false);
@@ -323,9 +338,9 @@ public class EditProducts extends JDialog {
             }
         } else if (chooseFunction.getSelectedIndex() == 1){
             if(chooseSubject.getSelectedIndex() == 0){
-                //editGroup();
+                editGroup();
             } else {
-                //editProduct();
+                editProduct();
             }
         } else {
             if(chooseSubject.getSelectedIndex() == 0){
@@ -343,6 +358,65 @@ public class EditProducts extends JDialog {
         priceOfProduct.setText("");
     }
 
+    private void editProduct() {
+        String groupName;
+        if(groupNameBox.getSelectedItem() != null){
+            groupName = groupNameBox.getSelectedItem().toString();
+        } else {
+            JOptionPane.showMessageDialog(this, "Групу товарів не обрано!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String productName;
+        if(productNameBox.getSelectedItem() != null){
+            productName = productNameBox.getSelectedItem().toString();
+        } else {
+            JOptionPane.showMessageDialog(this, "Товар не обрано!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String newName = nameOfProduct.getText();
+        newName = newName.replaceAll(";", "");
+        String newDescription = descriptionOfProduct.getText();
+        newDescription = newDescription.replaceAll(";", "");
+        String newProducer = producerOfProduct.getText();
+        newProducer = newProducer.replaceAll(";", "");
+        String newCount = countOfProduct.getText();
+        String newPrice = priceOfProduct.getText();
+        try {
+            main.getGroupByName(groupName).editProduct(productName, newName, newDescription, newProducer, newCount, newPrice);
+            main.updateFiles();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        updateProductNameBox();
+        JOptionPane.showMessageDialog(this, "Товар \"" + productName + "\" успішно відредаговано!");
+    }
+
+    private void editGroup() {
+        String oldName;
+        if(groupNameBox.getSelectedItem() != null){
+            oldName = groupNameBox.getSelectedItem().toString();
+        } else {
+            JOptionPane.showMessageDialog(this, "Групу товарів не обрано!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String newName = nameOfGroup.getText();
+        newName = newName.replaceAll(";", "");
+        String newDescription = descriptionOfGroup.getText();
+        newDescription = newDescription.replaceAll(";", "");
+        try {
+            main.editGroup(oldName, newName, newDescription);
+            main.updateFiles();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        updateInformation();
+        JOptionPane.showMessageDialog(this, "Групу товарів \"" + oldName + "\" успішно відредаговано!");
+    }
+
     private void addProduct() {
         String groupName;
         if(groupNameBox.getSelectedItem() != null){
@@ -351,7 +425,6 @@ public class EditProducts extends JDialog {
             JOptionPane.showMessageDialog(this, "Групу товарів не обрано!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        groupName = groupName.replaceAll(";", "");
         String name = nameOfProduct.getText();
         name = name.replaceAll(";", "");
         String description = descriptionOfProduct.getText();
@@ -368,12 +441,16 @@ public class EditProducts extends JDialog {
             return;
         }
 
-        if (!name.trim().isEmpty() && !description.trim().isEmpty() && !producer.trim().isEmpty() && count >= 0 && price > 0) {
-            addProductToGroup(groupName, name, description, producer, count, price);
-        } else {
-            JOptionPane.showMessageDialog(this, "Товар НЕ додано. Заповніть правильно всі поля!", "Error", JOptionPane.ERROR_MESSAGE);
+        try {
+            main.getGroupByName(groupName).addProduct(name, description, producer, count, price);
+            main.updateFiles();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        updateInformation();
+        JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");
     }
 
     private void addGroup() {
@@ -398,20 +475,7 @@ public class EditProducts extends JDialog {
     }
 
     private void addProductToGroup(String groupName, String name, String description, String producer, int count, int pricePerOne) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(main.allProductsFileName, true))){
-            main.getGroupByName(groupName).addProduct(new Items(name, description, producer, count, pricePerOne));
-            writer.write(groupName + ";" + name + ";" + description + ";" + producer + ";" + count + ";" + pricePerOne + "\n");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при додаванні товару у файл.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        updateInformation();
-        JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");
+
     }
 
     private void updateInformation() {
@@ -426,4 +490,5 @@ public class EditProducts extends JDialog {
         }
         isUpdating = false;
     }
+
 }

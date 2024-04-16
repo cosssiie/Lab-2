@@ -63,10 +63,10 @@ public class Interface extends JFrame{
                 main.editProducts.start();
                 break;
             case 1:
-                //main.supplyOfProducts.start();
+                main.supplyOfProducts.start();
                 break;
             case 2:
-                //main.productSearch.start();
+                main.productSearch.start();
                 break;
             case 3:
                 //main.statistics.start();
