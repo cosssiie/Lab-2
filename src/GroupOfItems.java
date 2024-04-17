@@ -138,5 +138,46 @@ public class GroupOfItems {
         }
         return totalValue;
     }
+
+    public void subtractProduct(String name, String count) throws IllegalArgumentException{
+        if (!main.productExists(name)){
+            throw new IllegalArgumentException("Товар з такою назвою не існує.");
+        } else if (count == null || count.trim().isEmpty()){
+            throw new IllegalArgumentException("Кількість товару не введено.");
+        }
+        int countInt;
+        try {
+            countInt = Integer.parseInt(count);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Кількість товару повинна бути числом.");
+        }
+        if (countInt <= 0){
+            throw new IllegalArgumentException("Кількість товару повинна бути більше 0.");
+        }
+        Items product = getProductByName(name);
+        if (product.getCount() - countInt < 0){
+            throw new IllegalArgumentException("На складі недостатньо товару.");
+        }
+        product.setCount(product.getCount() - countInt);
+    }
+
+    public void supplyProduct(String name, String count) throws IllegalArgumentException{
+        if (!main.productExists(name)){
+            throw new IllegalArgumentException("Товар з такою назвою не існує.");
+        } else if (count == null || count.trim().isEmpty()){
+            throw new IllegalArgumentException("Кількість товару не введено.");
+        }
+        int countInt;
+        try {
+            countInt = Integer.parseInt(count);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Кількість товару повинна бути числом.");
+        }
+        if (countInt <= 0){
+            throw new IllegalArgumentException("Кількість товару повинна бути більше 0.");
+        }
+        Items product = getProductByName(name);
+        getProductByName(name).setCount(product.getCount() + countInt);
+    }
 }
 

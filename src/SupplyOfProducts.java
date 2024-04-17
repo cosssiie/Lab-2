@@ -25,28 +25,30 @@ public class SupplyOfProducts extends JDialog {
     /** Напис "Скільки списати"/"Скільки поставили" */
     private JLabel supplyCountLabel;
 
-    public static final String groupsFileName = "GroupsOfProducts.txt";
-    public static final String allProducts = "AllProducts.txt"; //файл для збереження груп товарів
+    /** Напис "Поточна кількість товару" */
+    private JLabel currentQuantityLabel;
 
-    private static final int width = 800;
-    private static final int height = 700;
-    private static final int widthOfField = 300;
-    private static final int heightOfField = 70;
-    private static final int widthOfButton = 170;
-    private static final int heightOfButton = 70;
+    private static final int WIDTH_OF_FRAME = 500;
+    private static final int HEIGHT_OF_FRAME = 700;
+    private static final int WIDTH_OF_FIELD = 300;
+    private static final int HEIGHT_OF_FIELD = 70;
+    private static final int WIDTH_OF_BUTTON = 170;
+    private static final int HEIGHT_OF_BUTTON = 70;
+
+    private volatile boolean isUpdating = false;
 
     public SupplyOfProducts(String name, Main main, JFrame parent) {
         super(parent, name, true);
         this.main = main;
         this.setTitle(name);
-        this.setSize(width, height);
+        this.setSize(WIDTH_OF_FRAME, HEIGHT_OF_FRAME);
         this.getContentPane().setLayout(null);
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
         this.setLocationRelativeTo(null);
     }
     public void start(){
         init();
-        loadGroupNamesFromFile();
+        updateInformation();
         this.setVisible(true);
     }
 
@@ -59,39 +61,44 @@ public class SupplyOfProducts extends JDialog {
         chooseFunction.setRenderer(renderer);
         Font font = chooseFunction.getFont();
         chooseFunction.setFont(font.deriveFont(Font.BOLD, 16f));
-        chooseFunction.setBounds(width / 2 - widthOfField / 2, height / 2 - 300, widthOfField, heightOfField);
-        this.getContentPane().add(chooseFunction);
+        chooseFunction.setBounds(WIDTH_OF_FRAME / 2 - WIDTH_OF_FIELD / 2, HEIGHT_OF_FRAME / 2 - 300, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+        add(chooseFunction);
 
-        chooseGroup = new JComboBox<>(); // Додаємо вибірник груп товарів
-        chooseGroup.setBounds(width / 2 - widthOfField / 2, height / 2 - 200, widthOfField, heightOfField);
+        chooseGroup = new JComboBox<>();
+        chooseGroup.setBounds(WIDTH_OF_FRAME / 2 - WIDTH_OF_FIELD / 2, HEIGHT_OF_FRAME / 2 - 200, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
         chooseGroup.setRenderer(renderer);
         chooseGroup.setFont(font.deriveFont(Font.BOLD, 16f));
-        this.getContentPane().add(chooseGroup);
+        add(chooseGroup);
 
         chooseProduct = new JComboBox<>();
-        chooseProduct.setBounds(width / 2 - widthOfField / 2, height / 2 - 50, widthOfField, heightOfField);
+        chooseProduct.setBounds(WIDTH_OF_FRAME / 2 - WIDTH_OF_FIELD / 2, HEIGHT_OF_FRAME / 2 - 100, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
         chooseProduct.setRenderer(renderer);
         chooseProduct.setFont(font.deriveFont(Font.BOLD, 16f));
-        this.getContentPane().add(chooseProduct);
+        add(chooseProduct);
 
         supplyCountLabel = new JLabel("Скільки списати:");
-        supplyCountLabel.setBounds(width / 2 - 70, height - 320, widthOfField, heightOfField);
+        supplyCountLabel.setBounds(WIDTH_OF_FRAME / 2 - WIDTH_OF_FIELD / 2, HEIGHT_OF_FRAME - 320, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
         supplyCountLabel.setFont(font.deriveFont(Font.BOLD, 16f));
-        this.getContentPane().add(supplyCountLabel);
+        add(supplyCountLabel);
+
+        currentQuantityLabel = new JLabel("Поточна кількість товару: ");
+        currentQuantityLabel.setBounds(WIDTH_OF_FRAME / 2 - WIDTH_OF_FIELD / 2, HEIGHT_OF_FRAME - 360, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+        currentQuantityLabel.setFont(font.deriveFont(Font.BOLD, 16f));
+        add(currentQuantityLabel);
 
         supplyCount = new JTextField();
         supplyCount.setHorizontalAlignment(JTextField.CENTER);
         supplyCount.setFont(font.deriveFont(Font.BOLD, 16f));
-        supplyCount.setBounds(width / 2 - widthOfField / 2, 450, widthOfField, heightOfField);
-        this.getContentPane().add(supplyCount);
+        supplyCount.setBounds(WIDTH_OF_FRAME / 2 - WIDTH_OF_FIELD / 2, 450, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
+        add(supplyCount);
 
-        JButton saveButton = new JButton("Зберегти");
-        saveButton.setBounds(width / 2 - widthOfButton / 2, height - 150, widthOfButton, heightOfButton);
+        JButton saveButton = new JButton("OK");
+        saveButton.setBounds(WIDTH_OF_FRAME / 2 - WIDTH_OF_BUTTON / 2, HEIGHT_OF_FRAME - 150, WIDTH_OF_BUTTON, HEIGHT_OF_BUTTON);
         saveButton.setBackground(new Color(102, 153, 102, 250));
         saveButton.setForeground(Color.WHITE);
         Font buttonFont = saveButton.getFont();
         saveButton.setFont(buttonFont.deriveFont(Font.BOLD, 16f));
-        this.getContentPane().add(saveButton);
+        add(saveButton);
 
         saveButton.addActionListener(e -> {
             saveButtonActionPerformed();
@@ -103,194 +110,90 @@ public class SupplyOfProducts extends JDialog {
                 supplyCountLabel.setText("Скільки списати:");
 
             } else {
-                supplyCountLabel.setText("Скільки додати:");
+                supplyCountLabel.setText("Скільки доставити:");
             }
         });
 
         chooseGroup.addActionListener(e -> {
-            String selectedGroup = chooseGroup.getSelectedItem() + ".txt";
-            loadItemsForSelectedGroup(selectedGroup);
+            updateProductNameBox();
         });
 
         chooseProduct.addActionListener(e -> {
-            if (chooseFunction.getSelectedIndex() == 0) {
-                showQuantityOfProduct();
-            }
+            showQuantityOfProduct();
         });
     }
 
     private void showQuantityOfProduct() {
-        //TODO вивести у supplyCountLabel (додати до початку рядка) кількість товару, яка наявна
-        //System.out.println("showQuantityOfProduct");
-    }
-
-    private void loadItemsForSelectedGroup(String selectedGroup) {
-        chooseProduct.removeAllItems();
-
-        try {
-            File file = new File(selectedGroup);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parameters = line.split(",");
-                if (parameters.length > 0) {
-                    chooseProduct.addItem(parameters[0]);
-                }
-            }
-            reader.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при завантаженні товарів для обраної групи.", "Помилка", JOptionPane.ERROR_MESSAGE);
+        String selectedGroup;
+        String selectedProduct;
+        if (chooseGroup.getSelectedItem() != null && chooseProduct.getSelectedItem() != null) {
+            selectedGroup = chooseGroup.getSelectedItem().toString();
+            selectedProduct = chooseProduct.getSelectedItem().toString();
+        } else {
+            return;
         }
+        currentQuantityLabel.setText("Поточна кількість товару: " + main.getGroupByName(selectedGroup).getProductByName(selectedProduct).getCount());
+        System.out.println("showQuantityOfProduct");
     }
-
-
-    private void loadGroupNamesFromFile() {
-        try {
-            File file = new File(groupsFileName);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                chooseGroup.addItem(line);
-            }
-            reader.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при завантаженні імен груп товарів.", "Помилка", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-
-    private void subtractItems(String selectedGroup, String productName, int quantityToSubtract) {
-        try {
-            File file = new File(selectedGroup);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            int newCount = 0;
-            while ((line = reader.readLine()) != null) {
-                String[] parameters = line.split(",");
-                if (parameters.length > 0 && parameters[0].equals(productName)) {
-                    int currentCount = Integer.parseInt(parameters[3]);
-                    newCount = currentCount - quantityToSubtract;
-                    if (newCount < 0) {
-                        JOptionPane.showMessageDialog(this, "Недостатньо товару для списання.", "Помилка", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Товар успішно списано.\n Актуальна кількість товару " + newCount);
-                        showQuantityOfProduct();
-                    }
-                    parameters[3] = String.valueOf(newCount);
-                    line = String.join(",", parameters);
-                }
-                sb.append(line).append("\n");
-            }
-            reader.close();
-
-            Files.write(Paths.get(selectedGroup), sb.toString().getBytes());
-
-            // Оновлення файлу AllProducts.txt
-            updateAllProducts(productName, newCount);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при списанні товарів.");
-        }
-    }
-
-
-
-
-    private void addItems(String selectedGroup, String productName, int quantityToAdd) {
-        try {
-            File file = new File(selectedGroup);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            int newCount = 0;
-            while ((line = reader.readLine()) != null) {
-                String[] parameters = line.split(",");
-                if (parameters.length > 0 && parameters[0].equals(productName)) {
-                    int currentCount = Integer.parseInt(parameters[3]);
-                    newCount = currentCount + quantityToAdd;
-                    parameters[3] = String.valueOf(newCount);
-                    line = String.join(",", parameters);
-                }
-                sb.append(line).append("\n");
-            }
-            reader.close();
-
-            Files.write(Paths.get(selectedGroup), sb.toString().getBytes());
-            JOptionPane.showMessageDialog(this, "Товар успішно додано.\n Актуальна кількість товару " + newCount);
-            showQuantityOfProduct();
-
-            // Оновлення файлу AllProducts.txt
-            updateAllProducts(productName, newCount);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при додаванні товарів.", "Помилка", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void updateAllProducts(String productName, int newQuantity) {
-        try {
-            File file = new File(allProducts);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parameters = line.split(",");
-                if (parameters.length > 0 && parameters[0].equals(productName)) {
-                    parameters[3] = String.valueOf(newQuantity);
-                    line = String.join(",", parameters);
-                }
-                sb.append(line).append("\n");
-            }
-            reader.close();
-
-            Files.write(Paths.get("AllProducts.txt"), sb.toString().getBytes());
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Помилка при оновленні файлу AllProducts.txt.", "Помилка", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-
 
     private void saveButtonActionPerformed() {
-        String selectedGroup = chooseGroup.getSelectedItem() + ".txt";
-        String selectedProduct = (String) chooseProduct.getSelectedItem();
-        int quantity = 0;
-        try {
-            quantity = Integer.parseInt(supplyCount.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Введіть кількість товару правильно.", "Помилка", JOptionPane.ERROR_MESSAGE);
+        String selectedGroup;
+        String selectedProduct;
+        if (chooseGroup.getSelectedItem() != null) {
+            selectedGroup = chooseGroup.getSelectedItem().toString();
+        } else {
+            JOptionPane.showMessageDialog(this, "Виберіть групу товару.", "Помилка", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (chooseProduct.getSelectedItem() != null) {
+            selectedProduct = chooseProduct.getSelectedItem().toString();
+        } else {
+            JOptionPane.showMessageDialog(this, "Виберіть товар.", "Помилка", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (chooseFunction.getSelectedIndex() == 0) {
-            subtractItems(selectedGroup, selectedProduct, quantity);
+        try {
+            if (chooseFunction.getSelectedIndex() == 0) {
+                main.getGroupByName(selectedGroup).subtractProduct(selectedProduct, supplyCount.getText());
+                main.updateFiles();
+                JOptionPane.showMessageDialog(this, "Товар успішно списано.");
+                showQuantityOfProduct();
+            } else {
+                main.getGroupByName(selectedGroup).supplyProduct(selectedProduct, supplyCount.getText());
+                main.updateFiles();
+                JOptionPane.showMessageDialog(this, "Товар успішно доставлено.");
+                showQuantityOfProduct();
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Помилка", JOptionPane.ERROR_MESSAGE);
+            return;
+        } finally {
             supplyCount.setText("");
-        } else {
-            addItems(selectedGroup, selectedProduct, quantity);
-            supplyCount.setText("");
+        }
+    }
+
+    private void updateInformation() {
+        if (isUpdating) {
+            return;
+        }
+        isUpdating = true;
+        System.out.println("Updating information");
+        chooseGroup.removeAllItems();
+        for (GroupOfItems group : main.groupsList) {
+            chooseGroup.addItem(group.getNameOfGroup());
+        }
+        isUpdating = false;
+    }
+
+    private void updateProductNameBox() {
+        chooseProduct.removeAllItems();
+        GroupOfItems selectedGroup;
+        if (chooseGroup.getSelectedItem() != null) {
+            selectedGroup = main.getGroupByName(chooseGroup.getSelectedItem().toString());
+            for (Items product : selectedGroup.productsList) {
+                chooseProduct.addItem(product.getName());
+            }
         }
     }
 }
