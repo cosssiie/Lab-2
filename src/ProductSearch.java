@@ -1,9 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class ProductSearch extends JDialog {
     private Main main;
@@ -17,7 +13,7 @@ public class ProductSearch extends JDialog {
     /** Вивести інформацію про товар */
     private JTextArea information;
 
-    private static final int WIDTH_OF_FRAME = 800;
+    private static final int WIDTH_OF_FRAME = 500;
     private static final int HEIGHT_OF_FRAME = 700;
     private static final int WIDTH_OF_FIELD = 300;
     private static final int HEIGHT_OF_FIELD = 70;

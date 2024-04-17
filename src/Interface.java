@@ -30,6 +30,12 @@ public class Interface extends JFrame{
 
     private void init() {
         if (choose == null){
+            JLabel label = new JLabel("Автоматизоване робоче місце");
+            label.setBounds(WIDTH_OF_FRAME / 2 - WIDTH_OF_FIELD /2, 35, 480, HEIGHT_OF_FIELD);
+            Font font = label.getFont();
+            label.setFont(font.deriveFont(Font.BOLD, 30f));
+            add(label);
+
             choose = new JComboBox<>();
             choose.addItem("Додати/Редагувати/Видалити товар/групу товарів");
             choose.addItem("Постачання/списання товару");
@@ -38,7 +44,6 @@ public class Interface extends JFrame{
             DefaultListCellRenderer renderer = new DefaultListCellRenderer();
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             choose.setRenderer(renderer);
-            Font font = choose.getFont();
             choose.setFont(font.deriveFont(Font.BOLD, 16f));
             choose.setBounds(WIDTH_OF_FRAME /2 - WIDTH_OF_FIELD /2, HEIGHT_OF_FRAME /2 - HEIGHT_OF_FIELD*2, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
             add(choose);

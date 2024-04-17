@@ -55,6 +55,20 @@ public class GroupOfItems {
     }
 
     public void editProduct(String oldName, String newName, String newDescription, String newProducer, String newCount, String newPricePerOne) throws IllegalArgumentException{
+        if (!newCount.trim().isEmpty()) {
+            try {
+                Integer.parseInt(newCount);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Кількість товару повинна бути числом.");
+            }
+        }
+        if (!newPricePerOne.trim().isEmpty()) {
+            try {
+                Integer.parseInt(newPricePerOne);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Ціна за одиницю товару повинна бути числом.");
+            }
+        }
         if (!main.productExists(oldName)){
             throw new IllegalArgumentException("Товар з такою назвою не існує.");
         } else if (main.productExists(newName) && newDescription.trim().isEmpty() && newProducer.trim().isEmpty() && newCount.trim().isEmpty() && newPricePerOne.trim().isEmpty()){
@@ -69,20 +83,6 @@ public class GroupOfItems {
             throw new IllegalArgumentException("Товар має таку саму кількість.");
         } else if (newName.trim().isEmpty() && newDescription.trim().isEmpty() && newProducer.trim().isEmpty() && newCount.trim().isEmpty() && !newPricePerOne.trim().isEmpty() && getProductByName(oldName).getPricePerOne() == Integer.parseInt(newPricePerOne)){
             throw new IllegalArgumentException("Товар має таку саму ціну за одиницю.");
-        }
-        if (!newCount.trim().isEmpty()) {
-            try {
-                Integer.parseInt(newCount);
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Кількість товару повинна бути числом.");
-            }
-        }
-        if (!newPricePerOne.trim().isEmpty()) {
-            try {
-                Integer.parseInt(newPricePerOne);
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Ціна за одиницю товару повинна бути числом.");
-            }
         }
         if (!newCount.trim().isEmpty() && Integer.parseInt(newCount) < 0) {
             throw new IllegalArgumentException("Кількість товару не може бути від'ємною.");
