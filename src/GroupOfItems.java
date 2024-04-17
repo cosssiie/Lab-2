@@ -1,16 +1,24 @@
 import java.util.ArrayList;
 
+/**
+ * Клас, що описує групу товарів
+ */
 public class GroupOfItems {
     private Main main;
+
     /**Масив для зберігання товарів */
     public ArrayList<Items> productsList = new ArrayList<>();
     /**Назва групи товарів */
     private String nameOfGroup;
-
     /**Опис групи товарів */
     private String groupDescription;
-
-     public GroupOfItems(String nameOfGroup, String descriptionOfGroup, Main main){
+    /**
+     * Конструктор класу
+     * @param nameOfGroup - назва групи товарів
+     * @param descriptionOfGroup - опис групи товарів
+     * @param main - об'єкт класу Main
+     */
+    public GroupOfItems(String nameOfGroup, String descriptionOfGroup, Main main){
         this.main = main;
         this.nameOfGroup = nameOfGroup;
         this.groupDescription = descriptionOfGroup;
@@ -36,7 +44,15 @@ public class GroupOfItems {
         return "\nНазва групи товарів: " + nameOfGroup +
         "\nОпис групи товарів: " + groupDescription;
     }
-
+    /**
+     * Метод для додавання товару в групу
+     * @param name - назва товару
+     * @param desc - опис товару
+     * @param producer - виробник товару
+     * @param count - кількість товару на складі
+     * @param pricePerOne - ціна за одиницю
+     * @throws IllegalArgumentException
+     */
     public void addProduct(String name, String desc, String producer, int count, int pricePerOne) throws IllegalArgumentException{
          if (main.productExists(name)){
              throw new IllegalArgumentException("Товар з такою назвою вже існує.");
@@ -50,10 +66,23 @@ public class GroupOfItems {
              throw new IllegalArgumentException("Кількість товару не може бути від'ємною.");
          } else if (pricePerOne <= 0){
              throw new IllegalArgumentException("Ціна за одиницю товару повинна бути більше 0.");
+         } else if (!name.matches("[a-zA-Zа-яА-ЯіІїЇєЄ0-9\\s]+")){
+             throw new IllegalArgumentException("Назва товару повинна містити тільки літери та цифри.");
+         } else if (name.length() > 33){
+             throw new IllegalArgumentException("Назва товару повинна бути менше 33 символів.");
          }
-         productsList.add(new Items(name, desc, producer, count, pricePerOne));
+        productsList.add(new Items(name, desc, producer, count, pricePerOne));
     }
-
+    /**
+     * Метод для редагування товару
+     * @param oldName - стара назва товару
+     * @param newName - нова назва товару
+     * @param newDescription - новий опис товару
+     * @param newProducer - новий виробник товару
+     * @param newCount - нова кількість товару
+     * @param newPricePerOne - нова ціна за одиницю товару
+     * @throws IllegalArgumentException
+     */
     public void editProduct(String oldName, String newName, String newDescription, String newProducer, String newCount, String newPricePerOne) throws IllegalArgumentException{
         if (!newCount.trim().isEmpty()) {
             try {
@@ -83,7 +112,11 @@ public class GroupOfItems {
             throw new IllegalArgumentException("Товар має таку саму кількість.");
         } else if (newName.trim().isEmpty() && newDescription.trim().isEmpty() && newProducer.trim().isEmpty() && newCount.trim().isEmpty() && !newPricePerOne.trim().isEmpty() && getProductByName(oldName).getPricePerOne() == Integer.parseInt(newPricePerOne)){
             throw new IllegalArgumentException("Товар має таку саму ціну за одиницю.");
-        }
+        } else if (!newName.trim().isEmpty() && !newName.matches("[a-zA-Zа-яА-ЯіІїЇєЄ0-9\\s]+")){
+            throw new IllegalArgumentException("Назва товару повинна містити тільки літери та цифри.");
+        } else if (!newName.trim().isEmpty() && newName.length() > 33){
+            throw new IllegalArgumentException("Назва товару повинна бути менше 33 символів.");
+        } else
         if (!newCount.trim().isEmpty() && Integer.parseInt(newCount) < 0) {
             throw new IllegalArgumentException("Кількість товару не може бути від'ємною.");
         } else if (!newPricePerOne.trim().isEmpty() && Integer.parseInt(newPricePerOne) <= 0) {
@@ -110,7 +143,11 @@ public class GroupOfItems {
             }
         }
     }
-
+    /**
+     * Метод для видалення товару
+     * @param name - назва товару
+     * @throws IllegalArgumentException
+     */
     public void removeProduct(String name) throws IllegalArgumentException{
         if (!main.productExists(name)){
             throw new IllegalArgumentException("Товар з такою назвою не існує.");
@@ -122,7 +159,11 @@ public class GroupOfItems {
             }
         }
     }
-
+    /**
+     * Метод для отримання товару за назвою
+     * @param name - назва товару
+     * @return - об'єкт класу Items
+     */
     public Items getProductByName(String name){
         for (Items product : productsList){
             if (product.getName().equals(name)){
@@ -131,6 +172,10 @@ public class GroupOfItems {
         }
         return null;
     }
+    /**
+     * Метод для підрахунку загальної вартості товарів групи
+     * @return - загальна вартість товарів групи
+     */
     public int getTotalValue(){
         int totalValue = 0;
         for (Items product : productsList){
@@ -138,7 +183,12 @@ public class GroupOfItems {
         }
         return totalValue;
     }
-
+    /**
+     * Метод для списання товару
+     * @param name - назва товару
+     * @param count - кількість товару для списання
+     * @throws IllegalArgumentException
+     */
     public void subtractProduct(String name, String count) throws IllegalArgumentException{
         if (!main.productExists(name)){
             throw new IllegalArgumentException("Товар з такою назвою не існує.");
@@ -160,7 +210,12 @@ public class GroupOfItems {
         }
         product.setCount(product.getCount() - countInt);
     }
-
+    /**
+     * Метод для постачання товару
+     * @param name - назва товару
+     * @param count - кількість товару для постачання
+     * @throws IllegalArgumentException
+     */
     public void supplyProduct(String name, String count) throws IllegalArgumentException{
         if (!main.productExists(name)){
             throw new IllegalArgumentException("Товар з такою назвою не існує.");
