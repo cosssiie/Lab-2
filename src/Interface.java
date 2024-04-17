@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Вікно головного меню
+ */
 public class Interface extends JFrame{
     private final Main main;
 

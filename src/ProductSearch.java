@@ -35,7 +35,9 @@ public class ProductSearch extends JDialog {
     }
 
     private void init() {
-
+        if (nameOfProduct != null){
+            return;
+        }
         nameOfProduct = new JTextField();
         nameOfProduct.setHorizontalAlignment(JTextField.CENTER);
         Font font = nameOfProduct.getFont();

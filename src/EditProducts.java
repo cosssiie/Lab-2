@@ -83,6 +83,9 @@ public class EditProducts extends JDialog {
     }
 
     private void init() {
+        if (chooseSubject != null){
+            return;
+        }
         chooseSubject = new JComboBox<>();
         chooseSubject.addItem("групу товарів");
         chooseSubject.addItem("товар");

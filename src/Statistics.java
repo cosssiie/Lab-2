@@ -34,6 +34,9 @@ public class Statistics extends JDialog {
     }
 
     private void init() {
+        if (label != null){
+            return;
+        }
         label = new JLabel("Статистика");
         label.setBounds(WIDTH_OF_FRAME / 2 - 50, 40, WIDTH_OF_FIELD, HEIGHT_OF_FIELD);
         Font font = label.getFont();

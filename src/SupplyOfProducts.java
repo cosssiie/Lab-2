@@ -47,6 +47,9 @@ public class SupplyOfProducts extends JDialog {
     }
 
     private void init() {
+        if (chooseFunction != null){
+            return;
+        }
         chooseFunction = new JComboBox<>();
         chooseFunction.addItem("Списати товар");
         chooseFunction.addItem("Доставити товар");

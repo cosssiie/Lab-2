@@ -22,16 +22,26 @@ public class Main {
     public final String groupsFileName; //файл для збереження груп товарів
     public final String allProductsFileName; //файл для збереження груп товарів
 
+    /**
+     * Точка входу в програму
+     * @param args
+     */
     public static void main(String[] args) {
         Main main = new Main("GroupsOfProducts.txt", "AllProducts.txt");
         main.start();
     }
-
+    /**
+     * Конструктор класу Main
+     * @param groupsFileName - назва файлу для збереження груп товарів
+     * @param allProductsFileName - назва файлу для збереження усіх товарів
+     */
     public Main(String groupsFileName, String allProductsFileName) {
         this.groupsFileName = groupsFileName;
         this.allProductsFileName = allProductsFileName;
     }
-
+    /**
+     * Метод для запуску програми
+     */
     private void start() {
         loadInformationFromFiles();
         for (GroupOfItems group : groupsList){
@@ -47,7 +57,9 @@ public class Main {
         statistics = new Statistics("Статистика", this, mainInterface);
         mainInterface.start();
     }
-
+    /**
+     * Метод для завантаження інформації з файлів
+     */
     private void loadInformationFromFiles() {
         try(BufferedReader reader = new BufferedReader(new FileReader(groupsFileName))){
             String line;
@@ -76,11 +88,18 @@ public class Main {
             System.exit(1);
         }
     }
-
+    /**
+     * Метод для отримання списку груп товарів
+     * @return - список груп товарів
+     */
     public ArrayList<GroupOfItems> getGroupsList() {
         return groupsList;
     }
-
+    /**
+     * Метод для отримання групи товарів за назвою
+     * @param name - назва групи товарів
+     * @return - група товарів
+     */
     public GroupOfItems getGroupByName(String name){
         for (GroupOfItems group : groupsList){
             if (group.getNameOfGroup().equals(name)){
@@ -89,6 +108,11 @@ public class Main {
         }
         return null;
     }
+    /**
+     * Метод для перевірки існування групи товарів за назвою
+     * @param name - назва групи товарів
+     * @return - true, якщо група існує, false - якщо група не існує
+     */
     public boolean groupExists(String name){
         for (GroupOfItems group : groupsList){
             if (group.getNameOfGroup().equals(name)){
@@ -97,6 +121,11 @@ public class Main {
         }
         return false;
     }
+    /**
+     * Метод для перевірки існування товару за назвою
+     * @param name - назва товару
+     * @return - true, якщо товар існує, false - якщо товар не існує
+     */
     public boolean productExists(String name){
         for (GroupOfItems group : groupsList){
             for (Items product : group.productsList){
@@ -107,6 +136,11 @@ public class Main {
         }
         return false;
     }
+    /**
+     * Метод для додавання товару
+     * @param group - група товару
+     * @throws IllegalArgumentException неправильні аргументи
+     */
     public void addGroup(GroupOfItems group) throws IllegalArgumentException{
         if (groupExists(group.getNameOfGroup())){
             throw new IllegalArgumentException("Група з такою назвою вже існує.");
@@ -118,6 +152,13 @@ public class Main {
         groupsList.add(group);
     }
 
+    /**
+     * Метод для редагування групи товарів
+     * @param oldName - стара назва групи
+     * @param newName - нова назва групи
+     * @param newDescription - новий опис групи
+     * @throws IllegalArgumentException
+     */
     public void editGroup(String oldName, String newName, String newDescription) throws IllegalArgumentException{
         if (!groupExists(oldName)){
             throw new IllegalArgumentException("Групи з такою назвою не існує.");
@@ -142,7 +183,11 @@ public class Main {
             }
         }
     }
-
+    /**
+     * Метод для видалення групи товарів
+     * @param name - назва групи
+     * @throws IllegalArgumentException
+     */
     public void removeGroup(String name) throws IllegalArgumentException{
         if (!groupExists(name)){
             throw new IllegalArgumentException("Групи з такою назвою не існує.");
@@ -154,7 +199,9 @@ public class Main {
             }
         }
     }
-
+    /**
+     * Метод для збереження інформації у файли
+     */
     public void updateFiles(){
         try {
             BufferedWriter writer1 = new BufferedWriter(new FileWriter(groupsFileName));
@@ -179,6 +226,10 @@ public class Main {
             System.exit(1);
         }
     }
+    /**
+     * Метод для отримання загальної вартості товарів на складі
+     * @return - загальна вартість товарів на складі
+     */
     public int getTotalStockValue(){
         int totalValue = 0;
         for (GroupOfItems group : groupsList){
