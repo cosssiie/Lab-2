@@ -4,6 +4,9 @@ import java.io.*;
 
 import static java.lang.Integer.parseInt;
 
+/**
+ * Вікно редагування товарів або їх груп
+ */
 public class EditProducts extends JDialog {
     private final Main main;
 
@@ -67,6 +70,12 @@ public class EditProducts extends JDialog {
     private static final int WIDTH_OF_BUTTON = 170;
     private static final int HEIGHT_OF_BUTTON = 70;
 
+    /**
+     * Конструктор класу EditProducts
+     * @param name - назва вікна
+     * @param main - посилання на об'єкт класу Main
+     * @param parent - посилання на об'єкт класу JFrame
+     */
     public EditProducts(String name, Main main, JFrame parent) {
         super(parent, name, true);
         this.main = main;
@@ -76,12 +85,17 @@ public class EditProducts extends JDialog {
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
         this.setLocationRelativeTo(null);
     }
+    /**
+     * Метод для запуску вікна
+     */
     public void start(){
         init();
         updateInformation();
         this.setVisible(true);
     }
-
+    /**
+     * Метод для ініціалізації вікна
+     */
     private void init() {
         if (chooseSubject != null){
             return;
@@ -220,6 +234,9 @@ public class EditProducts extends JDialog {
         });
     }
 
+    /**
+     * Метод для оновлення списку товарів
+     */
     private void updateProductNameBox() {
         productNameBox.removeAllItems();
         GroupOfItems selectedGroup;
@@ -230,7 +247,9 @@ public class EditProducts extends JDialog {
             }
         }
     }
-
+    /**
+     * Метод, який викликається при зміні вибору функції
+     */
     private void functionActionPerformed() {
         if (chooseFunction.getSelectedIndex() != 2) {
             if (chooseSubject.getSelectedIndex() == 0) {
@@ -331,7 +350,9 @@ public class EditProducts extends JDialog {
             }
         }
     }
-
+    /**
+     * Метод, який викликається при натисканні на кнопку "OK", виконує відповідну функцію
+     */
     private void saveButtonActionPerformed() {
         if (chooseFunction.getSelectedIndex() == 0){
             if(chooseSubject.getSelectedIndex() == 0){
@@ -360,7 +381,9 @@ public class EditProducts extends JDialog {
         countOfProduct.setText("");
         priceOfProduct.setText("");
     }
-
+    /**
+     * Метод для видалення товару
+     */
     private void deleteProduct() {
         String groupName;
         if(groupNameBox.getSelectedItem() != null){
@@ -387,7 +410,9 @@ public class EditProducts extends JDialog {
         updateProductNameBox();
         JOptionPane.showMessageDialog(this, "Товар \"" + productName + "\" успішно видалено з групи \"" + groupName + "\"!");
     }
-
+    /**
+     * Метод для видалення групи товарів
+     */
     private void deleteGroup() {
         String groupName;
         if(groupNameBox.getSelectedItem() != null){
@@ -407,7 +432,9 @@ public class EditProducts extends JDialog {
         updateInformation();
         JOptionPane.showMessageDialog(this, "Групу товарів \"" + groupName + "\" успішно видалено!");
     }
-
+    /**
+     * Метод для редагування товару
+     */
     private void editProduct() {
         String groupName;
         if(groupNameBox.getSelectedItem() != null){
@@ -424,7 +451,6 @@ public class EditProducts extends JDialog {
             return;
         }
         String newName = nameOfProduct.getText();
-        newName = newName.replaceAll(";", "");
         String newDescription = descriptionOfProduct.getText();
         newDescription = newDescription.replaceAll(";", "");
         String newProducer = producerOfProduct.getText();
@@ -442,7 +468,9 @@ public class EditProducts extends JDialog {
         updateProductNameBox();
         JOptionPane.showMessageDialog(this, "Товар \"" + productName + "\" успішно відредаговано!");
     }
-
+    /**
+     * Метод для редагування групи товарів
+     */
     private void editGroup() {
         String oldName;
         if(groupNameBox.getSelectedItem() != null){
@@ -466,7 +494,9 @@ public class EditProducts extends JDialog {
         updateInformation();
         JOptionPane.showMessageDialog(this, "Групу товарів \"" + oldName + "\" успішно відредаговано!");
     }
-
+    /**
+     * Метод для додавання товару
+     */
     private void addProduct() {
         String groupName;
         if(groupNameBox.getSelectedItem() != null){
@@ -476,7 +506,6 @@ public class EditProducts extends JDialog {
             return;
         }
         String name = nameOfProduct.getText();
-        name = name.replaceAll(";", "");
         String description = descriptionOfProduct.getText();
         description = description.replaceAll(";", "");
         String producer = producerOfProduct.getText();
@@ -502,7 +531,9 @@ public class EditProducts extends JDialog {
         updateInformation();
         JOptionPane.showMessageDialog(this, "Товар \"" + name + "\" успішно додано в групу \"" + groupName + "\"!");
     }
-
+    /**
+     * Метод для додавання групи товарів
+     */
     private void addGroup() {
         String groupName = nameOfGroup.getText();
         groupName = groupName.replaceAll(";", "");
@@ -523,11 +554,9 @@ public class EditProducts extends JDialog {
         updateInformation();
         JOptionPane.showMessageDialog(this, "Групу товарів \"" + groupName + "\" успішно додано!");
     }
-
-    private void addProductToGroup(String groupName, String name, String description, String producer, int count, int pricePerOne) {
-
-    }
-
+    /**
+     * Метод для оновлення інформації у списку груп товарів
+     */
     private void updateInformation() {
         if (isUpdating) {
             return;

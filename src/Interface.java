@@ -16,7 +16,11 @@ public class Interface extends JFrame{
     private static final int HEIGHT_OF_FIELD = 70;
     private static final int WIDTH_OF_BUTTON = 170;
     private static final int HEIGHT_OF_BUTTON = 70;
-
+    /**
+     * Конструктор класу Interface
+     * @param name - назва вікна
+     * @param main - посилання на об'єкт класу Main
+     */
     public Interface(String name, Main main) {
         this.main = main;
         this.setTitle(name);
@@ -26,11 +30,16 @@ public class Interface extends JFrame{
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+    /**
+     * Метод для запуску вікна
+     */
     public void start(){
         init();
         this.setVisible(true);
     }
-
+    /**
+     * Метод для ініціалізації вікна
+     */
     private void init() {
         if (choose == null){
             JLabel label = new JLabel("Автоматизоване робоче місце");
@@ -64,7 +73,9 @@ public class Interface extends JFrame{
             });
         }
     }
-
+    /**
+     * Метод, який викликається при натисканні на кнопку "OK" та відкриває відповідне вікно
+     */
     private void okButtonActionPerformed() {
         switch (choose.getSelectedIndex()){
             case 0:

@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Вікно для виведення статистики
+ */
 public class Statistics extends JDialog {
     private final Main main;
 
@@ -18,7 +21,12 @@ public class Statistics extends JDialog {
     private static final int HEIGHT_OF_AREA = 400;
 
     private volatile boolean isPrinting = false;
-
+    /**
+     * Конструктор класу Statistics
+     * @param name - назва вікна
+     * @param main - посилання на об'єкт класу Main
+     * @param parent - посилання на об'єкт класу JFrame
+     */
     public Statistics(String name, Main main, JFrame parent) {
         super(parent, name, true);
         this.main = main;
@@ -28,11 +36,16 @@ public class Statistics extends JDialog {
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
         this.setLocationRelativeTo(null);
     }
+    /**
+     * Метод для запуску вікна
+     */
     public void start(){
         init();
         this.setVisible(true);
     }
-
+    /**
+     * Метод для ініціалізації вікна
+     */
     private void init() {
         if (label != null){
             return;
@@ -74,14 +87,18 @@ public class Statistics extends JDialog {
             printStatistics();
         });
     }
-
+    /**
+     * Метод для оновлення списку груп товарів
+     */
     private void updateGroupList() {
         groupNameBox.removeAllItems();
         for (GroupOfItems group : main.getGroupsList()){
             groupNameBox.addItem(group.getNameOfGroup());
         }
     }
-
+    /**
+     * Метод для виведення статистики
+     */
     private void printStatistics() {
         if (isPrinting){
             return;

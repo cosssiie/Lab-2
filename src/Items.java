@@ -1,3 +1,6 @@
+/**
+ * Клас, що описує товари
+ */
 public class Items {
     /**Назва товару */
     private String name;
@@ -13,7 +16,14 @@ public class Items {
 
     /**Ціна за одиницю */
     private int pricePerOne;
-
+    /**
+     * Конструктор класу
+     * @param name - назва товару
+     * @param description - опис товару
+     * @param producer - виробник товару
+     * @param count - кількість товару на складі
+     * @param pricePerOne - ціна за одиницю
+     */
     public Items(String name, String description, String producer, int count, int pricePerOne){
         this.name = name;
         this.description = description;
@@ -42,7 +52,7 @@ public class Items {
     public int getPricePerOne() {
         return pricePerOne;
     }
-
+    // Setter methods
     public void setPricePerOne(int pricePerOne) {
         this.pricePerOne = pricePerOne;
     }

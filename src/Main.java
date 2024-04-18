@@ -148,6 +148,8 @@ public class Main {
             throw new IllegalArgumentException("Назва групи не може бути порожньою.");
         } else if (group.getGroupDescription().trim().isEmpty()){
             throw new IllegalArgumentException("Опис групи не може бути порожнім.");
+        } else if (group.getNameOfGroup().length() > 33) {
+            throw new IllegalArgumentException("Назва групи не може бути довшою за 33 символи.");
         }
         groupsList.add(group);
     }
@@ -170,6 +172,8 @@ public class Main {
             throw new IllegalArgumentException("Нова назва або опис повинні бути відмінні від старих.");
         } else if (newName.trim().isEmpty() && getGroupByName(oldName).getGroupDescription().equals(newDescription)){
             throw new IllegalArgumentException("Група має такий самий опис.");
+        } else if (newName.length() > 33) {
+            throw new IllegalArgumentException("Назва групи не може бути довшою за 33 символи.");
         }
         for (GroupOfItems group : groupsList) {
             if (group.getNameOfGroup().equals(oldName)) {

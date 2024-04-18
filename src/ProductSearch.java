@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-
+/**
+ * Вікно пошуку товару
+ */
 public class ProductSearch extends JDialog {
     private Main main;
 

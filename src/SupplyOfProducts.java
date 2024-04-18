@@ -1,10 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-
+/**
+ * Вікно постачання/списання товару
+ */
 public class SupplyOfProducts extends JDialog {
     private final Main main;
 
-    /** Вибір функції: списати товар/поставка товарів */
+    /** Вибір функції: списати товар/постачання товарів */
     private JComboBox<String> chooseFunction;
 
     /** Вибір товару */
@@ -13,10 +15,10 @@ public class SupplyOfProducts extends JDialog {
     /** Вибір групи товарів */
     private JComboBox<String> chooseGroup;
 
-    /** Скільки поставили/списали */
+    /** Скільки доставили/списали */
     private JTextField supplyCount;
 
-    /** Напис "Скільки списати"/"Скільки поставили" */
+    /** Напис "Скільки списати"/"Скільки доставили" */
     private JLabel supplyCountLabel;
 
     /** Напис "Поточна кількість товару" */
@@ -30,7 +32,12 @@ public class SupplyOfProducts extends JDialog {
     private static final int HEIGHT_OF_BUTTON = 70;
 
     private volatile boolean isUpdating = false;
-
+    /**
+     * Конструктор класу SupplyOfProducts
+     * @param name - назва вікна
+     * @param main - посилання на об'єкт класу Main
+     * @param parent - посилання на об'єкт класу JFrame
+     */
     public SupplyOfProducts(String name, Main main, JFrame parent) {
         super(parent, name, true);
         this.main = main;
@@ -40,12 +47,17 @@ public class SupplyOfProducts extends JDialog {
         this.getContentPane().setBackground(new Color(204, 255, 153, 250));
         this.setLocationRelativeTo(null);
     }
+    /**
+     * Метод для запуску вікна
+     */
     public void start(){
         init();
         updateInformation();
         this.setVisible(true);
     }
-
+    /**
+     * Метод для ініціалізації вікна
+     */
     private void init() {
         if (chooseFunction != null){
             return;
@@ -120,6 +132,9 @@ public class SupplyOfProducts extends JDialog {
         });
     }
 
+    /**
+     * Метод для оновлення відображення кількості товару
+     */
     private void showQuantityOfProduct() {
         String selectedGroup;
         String selectedProduct;
@@ -132,7 +147,9 @@ public class SupplyOfProducts extends JDialog {
         currentQuantityLabel.setText("Поточна кількість товару: " + main.getGroupByName(selectedGroup).getProductByName(selectedProduct).getCount());
         System.out.println("showQuantityOfProduct");
     }
-
+    /**
+     * Метод для виконання дій при натисканні на кнопку "OK", тобто списання/доставка товару
+     */
     private void saveButtonActionPerformed() {
         String selectedGroup;
         String selectedProduct;
@@ -170,6 +187,9 @@ public class SupplyOfProducts extends JDialog {
         }
     }
 
+    /**
+     * Метод для оновлення списку груп товарів
+     */
     private void updateInformation() {
         if (isUpdating) {
             return;
@@ -182,7 +202,9 @@ public class SupplyOfProducts extends JDialog {
         }
         isUpdating = false;
     }
-
+    /**
+     * Метод для оновлення списку товарів
+     */
     private void updateProductNameBox() {
         chooseProduct.removeAllItems();
         GroupOfItems selectedGroup;
